@@ -14,12 +14,6 @@ from abbreviations import ABBREVIATIONS
 
 client = discord.Client()
 
-ABBREVIATIONS = {
-    "opus": "Magnum Opus",
-    "mopus": "Magnum Opus",
-    "temujin": "Temüjin Contract"
-}
-
 with open("cards.json") as f:
     nrdb_api = json.load(f)
     card_data = nrdb_api["data"]
@@ -47,6 +41,7 @@ def find_match(query):
     """
     query = query.lower().strip()
     print(query)
+    print(len(query))
     if query in ABBREVIATIONS:
         print("Matching from abbrev.")
         return card_names.index(ABBREVIATIONS[query].lower()), True
