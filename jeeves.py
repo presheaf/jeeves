@@ -1,6 +1,9 @@
 import discord, json, re
+from fuzzywuzzy import process
+
 from secrets import JEEVES_KEY
 from abbreviations import ABBREVIATIONS
+
 
 ##### NRDB lookup bot.
 ##### Responds to [[cardnames]] with a message with info.
@@ -43,51 +46,75 @@ def find_match(query):
     Also returns True if 'exact' match was found, or False if fuzzy matching was performed.
     """
     query = query.lower().strip()
+    print(query)
     if query in ABBREVIATIONS:
+        print("Matching from abbrev.")
         return card_names.index(ABBREVIATIONS[query].lower()), True
     elif query in card_names:
+        print("Matching from exact match.")
         return card_names.index(query), True
     else:
-        best_match = 10 # TODO: implement fuzzy matching
-        return best_match, False
+        print("Fuzzy matching.")
+        best_match = process.extract(query, card_names, limit=1)[0][0]
+        return card_names.index(best_match), False
 
 def card_info_string(index):
     """
     Returns nicely formatted card info to send to chat.
     """
     card_info = card_data[index]
-    if "influence_limit" in card_info: # card is an ID
+    
+    name = card_info["title"]
+    if card_info["uniqueness"]:
+        name = "* " + name
+    
+    if "keywords" in card_info:
+        typeline = (
+            "{type_code}: {keywords}"
+        ).format(**card_info)
+    else:
+        typeline = (
+            "{type_code}"
+        ).format(**card_info)
+
+        
+    if "faction_cost" in card_info:
+        infline = "{faction_code}, {faction_cost} inf".format(**card_info)
+    else:
+        infline = "{faction_code}".format(**card_info)
+
+        
+    if card_info["type_code"] == "agenda":
+        statline = (
+            "Advancement requirement: {advancement_cost}, agenda points: {agenda_points}"
+        ).format(**card_info)
+    else:
+        statline = ""
+        if "cost" in card_info:
+            statline += "Cost: {cost} ".format(**card_info)
+        if "strength" in card_info:
+            statline += "Strength: {strength} ".format(**card_info)
+        if "trash_cost" in card_info:
+            statline += "Trash: {trash_cost} ".format(**card_info)
+
+            
+    if card_info["type_code"] == "identity": # card is an ID
         return (
             "**{title}**\n"
             "*{faction_code}, {minimum_deck_size}/{influence_limit}*\n\n"
             "{text}\n\n*{flavor}"
         ).format(**card_info)
-        
     else: # card is a "normal" card
-        name = card_info["title"]
-        if card_info["uniqueness"]:
-            name = "* " + name
-
-        if "keywords" in card_info:
-            typeline = (
-                "{type_code}: {keywords},  Cost: {cost}, \n"
-                "Influence: {faction_cost} inf ({faction_code})"
-            ).format(**card_info)
-        else:
-            typeline = (
-                "{type_code},  Cost: {cost}, \n"
-                "Influence: {faction_cost} inf ({faction_code})"
-            ).format(**card_info)
-
         cardtext = card_info["text"]
         if "flavor" in card_info:
             cardtext += "\n\n *{}*".format(card_info["flavor"])
         
 
         return (
-            "**{name}**\n*{typeline}*\n"
+            "**{name}**\n*{typeline}*\n{infline}\n{statline}\n"
             "{cardtext}"
-        ).format(name=name, typeline=typeline, cardtext=cardtext)
+        ).format(name=name, typeline=typeline, infline=infline,
+                 statline=statline, cardtext=cardtext)
         
 
 
