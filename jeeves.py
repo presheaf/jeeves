@@ -44,9 +44,10 @@ def find_match(query):
     query = query.lower().strip()
     print("Query: " + query)
     if query in ABBREVIATIONS:
-        print("Matching from abbrev.")
-        return card_names.index(ABBREVIATIONS[query].lower()), 100
-    elif query in card_names:
+        print("Applying abbrev.")
+        query = ABBREVIATIONS[query].lower()
+        
+    if query in card_names:
         print("Matching from exact match.")
         return card_names.index(query), 100
     else:
@@ -103,7 +104,7 @@ def card_info_string(index):
         return (
             "**{title}**\n"
             "*{faction_code}, {minimum_deck_size}/{influence_limit}*\n\n"
-            "{text}\n\n*{flavor}"
+            "{text}\n\n*{flavor}*"
         ).format(**card_info)
     else: # card is a "normal" card
         cardtext = card_info["text"]
