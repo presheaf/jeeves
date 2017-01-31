@@ -41,21 +41,21 @@ def find_match(query):
     print("Query: " + query)
     if query in ABBREVIATIONS:
         print("Matching from abbrev.")
-        return card_names.index(ABBREVIATIONS[query].lower()), True
+        return card_names.index(ABBREVIATIONS[query].lower()), 100
     elif query in card_names:
         print("Matching from exact match.")
-        return card_names.index(query), True
+        return card_names.index(query), 100
     else:
         print("Fuzzy matching.")
-        best_match = process.extract(query, card_names, limit=1)[0][0]
-        return card_names.index(best_match), False
+        best_match, certainty = process.extract(query, card_names, limit=1)[0]
+        return card_names.index(best_match), certainty
 
 def card_info_string(index):
     """
     Returns nicely formatted card info to send to chat.
     """
     card_info = card_data[index]
-    
+    card_info["text"] = clean_text(card_info["text"])
     name = card_info["title"]
     if card_info["uniqueness"]:
         name = "* " + name
@@ -109,6 +109,10 @@ def card_info_string(index):
                  statline=statline, cardtext=cardtext)
         
 
+def clean_text(cardtext):
+    strong_tag_regex = r"</?strong>" # matches <strong> and </strong>
+    return re.sub(strong_tag_regex, "**", text)
+
 
 @client.event
 async def on_message(message):
@@ -119,11 +123,11 @@ async def on_message(message):
     queries = extract_queries(message.content)
     
     for query in queries:
-        card_index, exact_match = find_match(query)
-        if exact_match:
+        card_index, matchness = find_match(query)
+        if matchness == 100:
             msg = "Was *this* your card? \n\n"
         else:
-            msg = "Not 100% sure, but was *this* your card? \n\n"
+            msg = "I am {}% sure that *this* was your card: \n\n".format(matchness)
 
         msg = msg + card_info_string(card_index)
         await client.send_message(message.channel, msg)
@@ -134,4 +138,5 @@ async def on_ready():
     print(client.user.name)
     print('------')
 
-client.run(JEEVES_KEY)
+if __name__ == "__main__":    
+    client.run(JEEVES_KEY)
