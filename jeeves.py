@@ -28,7 +28,7 @@ def extract_queries(msg_text):
     """
     card_query_regex = r"\[\[([\s_a-zA-Z0-9\']*?)\]\]" # matches [[cardnames]]
     image_query_regex = r"\{\{([\s_a-zA-Z0-9\']*?)\}\}" # matches {{cardnames}}
-    system_query_regex = r"^\!(\S)+" # matches !input
+    system_query_regex = r"^\!(\S+)" # matches !input
     
     return (
         [(match.group(1), "card")
@@ -147,7 +147,7 @@ async def on_message(message):
           else:
              msg = msg + card_image_string(card_index)
         elif query_type == "system":
-          msg = "This is a system message. You wrote !{}".format(query.group(1))
+          msg = "This is a system message. You wrote !{}".format(query)
         await client.send_message(message.channel, msg)
 
 @client.event
