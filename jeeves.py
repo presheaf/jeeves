@@ -26,11 +26,15 @@ def extract_queries(msg_text):
     """
     Returns list of queries from a Discord message
     """
-    query_regex = r"\[\[([\s_a-zA-Z0-9\']*?)\]\]" # matches [[cardnames]]
-    
+    card_query_regex = r"\[\[([\s_a-zA-Z0-9\']*?)\]\]" # matches [[cardnames]]
+    image_query_regex = r"\{\{([\s_a-zA-Z0-9\']*?)\}\}" # matches {{cardnames}}
 
-    return [match.group(1)
-            for match in re.finditer(query_regex, msg_text)]
+    return (
+        [(match.group(1), "card")
+         for match in re.finditer(card_query_regex, msg_text)] +
+        [(match.group(1), "image")
+         for match in re.finditer(image_query_regex, msg_text)]
+    )
 
 def find_match(query):
     """
@@ -49,6 +53,11 @@ def find_match(query):
         print("Fuzzy matching.")
         best_match, certainty = process.extract(query, card_names, limit=1)[0]
         return card_names.index(best_match), certainty
+
+
+def card_image_string(index):
+    return IMAGE_URL_TEMPLATE.format(code=card_data[index]["code"])
+
 
 def card_info_string(index):
     """
@@ -122,14 +131,16 @@ async def on_message(message):
     
     queries = extract_queries(message.content)
     
-    for query in queries:
+    for query, query_type in queries:
         card_index, matchness = find_match(query)
         if matchness == 100:
             msg = "Was *this* your card? \n\n"
         else:
             msg = "I am {}% sure that *this* was your card: \n\n".format(matchness)
-
-        msg = msg + card_info_string(card_index)
+        if query_type == "card":
+            msg = msg + card_info_string(card_index)
+        else:
+            msg = msg + card_image_string(card_index)
         await client.send_message(message.channel, msg)
 
 @client.event
