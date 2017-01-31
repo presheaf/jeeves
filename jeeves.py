@@ -1,4 +1,4 @@
-import discord, json, re
+import discord, json, re, urllib2
 from fuzzywuzzy import process
 
 from secrets import JEEVES_KEY
@@ -13,7 +13,8 @@ from abbreviations import ABBREVIATIONS
 
 client = discord.Client()
 
-with open("cards.json") as f:
+url = "https://netrunnerdb.com/api/2.0/public/cards"
+with urllib2.urlopen(url) as f:
     nrdb_api = json.load(f)
     card_data = nrdb_api["data"]
     IMAGE_URL_TEMPLATE = nrdb_api["imageUrlTemplate"]
@@ -118,7 +119,7 @@ def card_info_string(index):
                  statline=statline, cardtext=cardtext)
         
 
-def clean_text(text):
+def clean_text(cardtext):
     strong_tag_regex = r"</?strong>" # matches <strong> and </strong>
     return re.sub(strong_tag_regex, "**", text)
 
