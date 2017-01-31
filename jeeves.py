@@ -21,6 +21,7 @@ IMAGE_URL_TEMPLATE = nrdb_api["imageUrlTemplate"]
 card_names = list(map(lambda card_dict: card_dict["title"].lower(),
                       card_data))
 
+SYSTEM_CALLS = ["update", "psi"]
 
 def extract_queries(msg_text):
     """
@@ -28,15 +29,18 @@ def extract_queries(msg_text):
     """
     card_query_regex = r"\[\[([\s_a-zA-Z0-9\']*?)\]\]" # matches [[cardnames]]
     image_query_regex = r"\{\{([\s_a-zA-Z0-9\']*?)\}\}" # matches {{cardnames}}
-    system_query_regex = r"^\!(\S+)" # matches !input
-    
+    # system_query_regex = r"^\!(\S+)" # matches !input
+
+    if msg_text[0] == "!" and msg_text[1:] in SYSTEM_CALLS:
+        system_calls = [(msg_text[1:], "system")]
+    else:
+        system_calls = []
     return (
         [(match.group(1), "card")
          for match in re.finditer(card_query_regex, msg_text)] +
         [(match.group(1), "image")
          for match in re.finditer(image_query_regex, msg_text)] +
-        [(match.group(1), "system")
-         for match in re.finditer(system_query_regex, msg_text)]
+        system_calls
     )
 
 def find_match(query):
