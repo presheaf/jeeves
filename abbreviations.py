@@ -230,5 +230,7 @@ ABBREVIATIONS = {
 	'barney': 'Bryan Stinson',
 	'hat': 'Hellion Alpha Test',
 	'hbt': 'Hellion Beta Test',
-	'csm': 'Clone Suffrage Movement'
+	'csm': 'Clone Suffrage Movement',
+	'beth': 'Beth Kilrain-Chang",
+	'eirik': 'Leela Patel: Trained Pragmatist'
 }
