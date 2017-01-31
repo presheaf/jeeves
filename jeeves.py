@@ -28,12 +28,15 @@ def extract_queries(msg_text):
     """
     card_query_regex = r"\[\[([\s_a-zA-Z0-9\']*?)\]\]" # matches [[cardnames]]
     image_query_regex = r"\{\{([\s_a-zA-Z0-9\']*?)\}\}" # matches {{cardnames}}
-
+    system_query_regex = r"^\!(\S)+" # matches !input
+    
     return (
         [(match.group(1), "card")
          for match in re.finditer(card_query_regex, msg_text)] +
         [(match.group(1), "image")
-         for match in re.finditer(image_query_regex, msg_text)]
+         for match in re.finditer(image_query_regex, msg_text)] +
+        [(match.group(1), "system")
+         for match in re.finditer(system_query_regex, msg_text)]
     )
 
 def find_match(query):
@@ -133,15 +136,18 @@ async def on_message(message):
     queries = extract_queries(message.content)
     
     for query, query_type in queries:
-        card_index, matchness = find_match(query)
-        if matchness == 100:
+        if query_type != "system":
+          card_index, matchness = find_match(query)
+          if matchness == 100:
             msg = "Was *this* your card? \n\n"
-        else:
+          else:
             msg = "I am {}% sure that *this* was your card: \n\n".format(matchness)
-        if query_type == "card":
+          if query_type == "card":
             msg = msg + card_info_string(card_index)
-        else:
-            msg = msg + card_image_string(card_index)
+          else:
+             msg = msg + card_image_string(card_index)
+        elif query_type == "system":
+          msg = "This is a system message. You wrote !{}".format(query.group(1))
         await client.send_message(message.channel, msg)
 
 @client.event
