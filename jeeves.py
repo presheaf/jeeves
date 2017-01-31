@@ -109,7 +109,7 @@ def card_info_string(index):
                  statline=statline, cardtext=cardtext)
         
 
-def clean_text(cardtext):
+def clean_text(text):
     strong_tag_regex = r"</?strong>" # matches <strong> and </strong>
     return re.sub(strong_tag_regex, "**", text)
 
