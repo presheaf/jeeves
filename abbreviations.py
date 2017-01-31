@@ -232,5 +232,6 @@ ABBREVIATIONS = {
 	'hbt': 'Hellion Beta Test',
 	'csm': 'Clone Suffrage Movement',
 	'beth': 'Beth Kilrain-Chang',
-	'eirik': 'Leela Patel: Trained Pragmatist'
+	'eirik': 'Leela Patel: Trained Pragmatist',
+	'karl erik': 'Rielle "Kit" Peddler'
 }
