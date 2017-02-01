@@ -140,7 +140,7 @@ def clean_text(text):
     for symbol, emoji_id in [
             ("[click]", "<:click:276441059515695105>")
     ]:
-        text.replace(symbol, emoji_id)
+        text = text.replace(symbol, emoji_id)
         
     
     
