@@ -142,8 +142,7 @@ def clean_text(text):
     ]:
         text.replace(symbol, emoji_id)
         
-    text = re.sub(netrunner_symbol_regex, r':\g<1>:', text)
-
+    
     
     
     return text
