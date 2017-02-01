@@ -35,7 +35,7 @@ def extract_queries(msg_text):
     """
     Returns list of queries from a Discord message
     """
-    card_query_regex = r"\[\[([\s_a-zA-Z0-9\']*?)\]\]" # matches [[cardnames]]
+    card_query_regex = r"\[\[([\s_a-zA-Z0-9\.\']*?)\]\]" # matches [[cardnames]]
     image_query_regex = r"\{\{([\s_a-zA-Z0-9\']*?)\}\}" # matches {{cardnames}}
     # system_query_regex = r"^\!(\S+)" # matches !input
 
