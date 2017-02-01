@@ -22,7 +22,7 @@ IMAGE_URL_TEMPLATE = nrdb_api["imageUrlTemplate"]
 card_names = list(map(lambda card_dict: card_dict["title"].lower(),
                       card_data))
 
-SYSTEM_CALLS = ["update", "psi", "eirik"]
+SYSTEM_CALLS = ["update", "psi", "eirik", "ulrik"]
 
 def restart():
     """Call restart script and exit. 
@@ -153,6 +153,8 @@ def execute_system(text):
       restart()
     if text == 'eirik':
       return ':triumph:'
+    if text == 'ulrik':
+      return 'I think you mean [[corroder]].'
 
 
 @client.event
