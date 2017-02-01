@@ -135,7 +135,13 @@ def card_info_string(index):
 
 def clean_text(text):
     strong_tag_regex = r"</?strong>" # matches <strong> and </strong>
-    return re.sub(strong_tag_regex, "**", text)
+    netrunner_symbol_regex = r"\[([\s_a-zA-Z0-9\']*?)\]" # matches [text]
+    text = re.sub(strong_tag_regex, "**", text)
+    text = re.sub(netrunner_symbol_regex, r':\g<1>:', text)
+
+    
+    
+    return text
   
 def execute_system(text):
     if text == 'psi':
