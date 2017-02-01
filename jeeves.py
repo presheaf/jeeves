@@ -21,7 +21,7 @@ IMAGE_URL_TEMPLATE = nrdb_api["imageUrlTemplate"]
 card_names = list(map(lambda card_dict: card_dict["title"].lower(),
                       card_data))
 
-SYSTEM_CALLS = ["update", "psi"]
+SYSTEM_CALLS = ["update", "psi", "eirik"]
 
 def extract_queries(msg_text):
     """
@@ -135,6 +135,8 @@ def execute_system(text):
       return 'I bid ' + str(randint(0,2))
     if text == 'update':
       return 'This should update me. Next version(tm).'
+    if text == 'eirik':
+      return ':triumph'
 
 
 @client.event
