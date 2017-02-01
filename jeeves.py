@@ -135,8 +135,13 @@ def card_info_string(index):
 
 def clean_text(text):
     strong_tag_regex = r"</?strong>" # matches <strong> and </strong>
-    netrunner_symbol_regex = r"\[([\s_a-zA-Z0-9\']*?)\]" # matches [text]
+
     text = re.sub(strong_tag_regex, "**", text)
+    for symbol, emoji_id in [
+            ("[click]", "<:click:276441059515695105>")
+    ]:
+        text.replace(symbol, emoji_id)
+        
     text = re.sub(netrunner_symbol_regex, r':\g<1>:', text)
 
     
