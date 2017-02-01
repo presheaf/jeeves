@@ -154,7 +154,7 @@ def execute_system(text):
     if text == 'update':
       restart()
     if text == 'eirik':
-      return ':triumph'
+      return ':triumph:'
 
 
 @client.event
