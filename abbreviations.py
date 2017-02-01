@@ -233,5 +233,6 @@ ABBREVIATIONS = {
 	'csm': 'Clone Suffrage Movement',
 	'beth': 'Beth Kilrain-Chang',
 	'eirik': 'Leela Patel: Trained Pragmatist',
-	'karl erik': 'Rielle "Kit" Peddler'
+	'karl erik': 'Rielle "Kit" Peddler',
+	'potato': 'Jinteki: Potential Unleashed'
 }
