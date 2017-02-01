@@ -21,7 +21,7 @@ IMAGE_URL_TEMPLATE = nrdb_api["imageUrlTemplate"]
 card_names = list(map(lambda card_dict: card_dict["title"].lower(),
                       card_data))
 
-SYSTEM_CALLS = ["update", "psi"]
+SYSTEM_CALLS = ["update", "psi", "eirik"]
 
 def extract_queries(msg_text):
     """
@@ -129,6 +129,14 @@ def card_info_string(index):
 def clean_text(text):
     strong_tag_regex = r"</?strong>" # matches <strong> and </strong>
     return re.sub(strong_tag_regex, "**", text)
+  
+def execute_system(text):
+    if text == 'psi':
+      return 'I bid ' + str(randint(0,2))
+    if text == 'update':
+      return 'This should update me. Next version(tm).'
+    if text == 'eirik':
+      return ':triumph'
 
 
 @client.event
@@ -151,7 +159,8 @@ async def on_message(message):
           else:
              msg = msg + card_image_string(card_index)
         elif query_type == "system":
-          msg = "This is a system message. You wrote !{}".format(query)
+          msg = execute_system(query)
+          #msg = "This is a system message. You wrote !{}".format(query)
         await client.send_message(message.channel, msg)
 
 @client.event
