@@ -1,4 +1,4 @@
-import discord, json, re, requests, subprocess, sys
+import discord, json, re, requests, subprocess, sys, random
 from fuzzywuzzy import process
 
 from secrets import JEEVES_KEY
@@ -82,7 +82,7 @@ def card_info_string(index):
     card_info["text"] = clean_text(card_info["text"])
     name = card_info["title"]
     if card_info["uniqueness"]:
-        name = "* " + name
+        name = ":eight_pointed_black_star: " + name
     
     if "keywords" in card_info:
         typeline = (
@@ -145,7 +145,7 @@ def clean_text(text):
   
 def execute_system(text):
     if text == 'psi':
-      return 'I bid ' + str(randint(0,2))
+      return 'I bid ' + str(random.randint(0,2))
     if text == 'update':
       restart()
     if text == 'eirik':
