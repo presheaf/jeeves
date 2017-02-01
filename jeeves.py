@@ -1,4 +1,4 @@
-import discord, json, re, requests
+import discord, json, re, requests, subprocess, sys
 from fuzzywuzzy import process
 
 from secrets import JEEVES_KEY
@@ -22,6 +22,13 @@ card_names = list(map(lambda card_dict: card_dict["title"].lower(),
                       card_data))
 
 SYSTEM_CALLS = ["update", "psi", "eirik"]
+
+def restart():
+    """Call restart script and exit. 
+    Not clean but hopefully functional."""
+    print("Restarting")
+    subprocess.Popen(["bash", "start.sh"])
+    sys.exit(0)
 
 def extract_queries(msg_text):
     """
@@ -134,7 +141,7 @@ def execute_system(text):
     if text == 'psi':
       return 'I bid ' + str(randint(0,2))
     if text == 'update':
-      return 'This should update me. Next version(tm).'
+      restart()
     if text == 'eirik':
       return ':triumph'
 
@@ -171,3 +178,4 @@ async def on_ready():
 
 if __name__ == "__main__":    
     client.run(JEEVES_KEY)
+    restart()
