@@ -3,6 +3,7 @@ from fuzzywuzzy import process
 
 from secrets import JEEVES_KEY
 from abbreviations import ABBREVIATIONS
+from customemoji import CUSTOMEMOJI
 
 
 ##### NRDB lookup bot.
@@ -137,10 +138,8 @@ def clean_text(text):
     strong_tag_regex = r"</?strong>" # matches <strong> and </strong>
 
     text = re.sub(strong_tag_regex, "**", text)
-    for symbol, emoji_id in [
-            ("[click]", "<:click:276441059515695105>")
-    ]:
-        text = text.replace(symbol, emoji_id)
+    for symbol in CUSTOMEMOJI:
+        text = text.replace(symbol, CUSTOMEMOJI[symbol])
         
     
     
