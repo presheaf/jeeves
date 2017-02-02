@@ -147,26 +147,28 @@ def execute_system(texttouple):
     text, vals = texttouple
     vals = vals.split()
     if text == 'psi':
-      if len(vals) > 0 and vals[0].isdigit() and int(vals[0]) >= 0 and int(vals[0]) < 3:
-        if random.random() < 0.7:
-          return "You bid: "+vals[0]+" I bid: "+vals[0]+". I win!"
-        else:
-          g = random.randint(0,2)
-          if int(vals[0]) == g:
-            winmsg = ". I win!"
-          else:
-            winmsg = ". You win!"
-          return "You bid: "+vals[0]+" I bid: "+str(g)+winmsg
-      elif len(vals) > 0:
-        return "I don't understand your bid, but I bid " + str(random.randint(0,2))+" anyway. Did I win?"
-      else:
-        return "You did not bid at all! DQ! My bid was " +str(random.randint(0,2))+" by the way."
+      return psi_game(vals)
     if text == 'update':
       restart()
     if text == 'eirik':
       return ':triumph:'
     if text == 'ulrik':
       return 'I think you mean [[corroder]].'
+    
+def psi_game(vals):
+  if len(vals) > 0 and vals[0].isdigit() and int(vals[0]) >= 0 and int(vals[0]) < 3:
+    g = random.randint(0,2)
+    if int(vals[0]) == g:
+      winmsg = ". You win!"
+    else:
+      winmsg = ". I win!"
+    return "You bid: "+vals[0]+". I bid: "+str(g)+winmsg
+  elif len(vals) > 0 and vals[0].isdigit():
+    return "Bidding " + vals[0] + " is an illegal bid! DQ!"
+  elif len(vals) > 0:
+    return "That's not even a number!"
+  else:
+    return "Protip: Actually bidding helps your chances."
 
 
 @client.event
