@@ -38,7 +38,7 @@ def extract_queries(msg_text):
     #card_query_regex = r"\[\[([\s_a-zA-Z0-9\.\']*?)\]\]" # matches [[cardnames]]
     #image_query_regex = r"\{\{([\s_a-zA-Z0-9\']*?)\}\}" # matches {{cardnames}}
     card_query_regex = r"\[\[(.+?)\]\]" # matches [[cardnames]]
-    card_query_regex = r"\{\{(.+?)\}\}" # matches {{cardnames}}
+    image_query_regex = r"\{\{(.+?)\}\}" # matches {{cardnames}}
     # system_query_regex = r"^\!(\S+)" # matches !input
 
     if msg_text[0] == "!" and msg_text[1:] in SYSTEM_CALLS:
