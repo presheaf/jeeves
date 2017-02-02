@@ -37,18 +37,15 @@ def extract_queries(msg_text):
     """
     card_query_regex = r"\[\[(.+?)\]\]" # matches [[cardnames]]
     image_query_regex = r"\{\{(.+?)\}\}" # matches {{cardnames}}
-    # system_query_regex = r"^\!(\S+)" # matches !input
+    system_query_regex = r"^\!(\S+)(.*)" # matches !input options
 
-    if msg_text[0] == "!" and msg_text[1:] in SYSTEM_CALLS:
-        system_calls = [(msg_text[1:], "system")]
-    else:
-        system_calls = []
     return (
         [(match.group(1), "card")
          for match in re.finditer(card_query_regex, msg_text)] +
         [(match.group(1), "image")
          for match in re.finditer(image_query_regex, msg_text)] +
-        system_calls
+        [((match.group(1), match.group(2)), "system")
+         for match in re.finditer(system_query_regex, msg_text)]
     )
 
 def find_match(query):
@@ -146,9 +143,24 @@ def clean_text(text):
     
     return text
   
-def execute_system(text):
+def execute_system(texttouple):
+    text, vals = texttouple
+    vals = vals.split()
     if text == 'psi':
-      return 'I bid ' + str(random.randint(0,2))
+      if len(vals) > 0 and vals[0].isdigit() and int(vals[0]) >= 0 and int(vals[0]) < 3:
+        if random.random() < 0.7:
+          return "You bid: "+vals[0]+" I bid: "+vals[0]+". I win!"
+        else:
+          g = random.randint(0,2)
+          if int(vals[0]) == g:
+            winmsg = ". I win!"
+          else:
+            winmsg = ". You win!"
+          return "You bid: "+vals[0]+" I bid: "+str(g)+winmsg
+      elif len(vals) > 0:
+        return "I don't understand your bid, but I bid " + str(random.randint(0,2))+" anyway. Did I win?"
+      else:
+        return "You did not bid at all! DQ! My bid was " +str(random.randint(0,2))+" by the way."
     if text == 'update':
       restart()
     if text == 'eirik':
