@@ -232,8 +232,9 @@ ABBREVIATIONS = {
 	'hbt': 'Hellion Beta Test',
 	'csm': 'Clone Suffrage Movement',
 	'beth': 'Beth Kilrain-Chang',
-	'eli': 'Eli 1',
+	'eli': 'Eli 1.0',
 	'eirik': 'Leela Patel: Trained Pragmatist',
 	'karl erik': 'Rielle "Kit" Peddler',
-	'potato': 'Jinteki: Potential Unleashed'
+	'potato': 'Jinteki: Potential Unleashed',
+	'nikolai': 'Jesminder Sareen: Girl Behind The Curtain'
 }
