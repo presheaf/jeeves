@@ -8,3 +8,13 @@ CUSTOMEMOJI = {
   '[subroutine]': '<:sub:276443224413962252>',
   '[agenda]': '<:agenda:276444224751271936>'
   }
+
+FACTIONS = {
+		'criminal': '<:crim:276441039261270016>',
+		'shaper': '<:shaper:276443214431387648>',
+		'anarch': '<:anarch:276441739584208896>',
+		'nbn': '<:nbn:276442725769936897>',
+		'haas-bioroid': '<:hb:276444251456536576>',
+		'jinteki': '<:jinteki:276442011060535296>',
+		'weyland-consortium': '<:weyland:276444202282254337>'
+}

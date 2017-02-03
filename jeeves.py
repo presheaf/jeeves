@@ -3,7 +3,7 @@ from fuzzywuzzy import process
 
 from secrets import JEEVES_KEY
 from abbreviations import ABBREVIATIONS
-from customemoji import CUSTOMEMOJI
+from customemoji import CUSTOMEMOJI, FACTIONS
 
 
 ##### NRDB lookup bot.
@@ -93,9 +93,9 @@ def card_info_string(index):
 
         
     if "faction_cost" in card_info:
-        infline = "{faction_code}, {faction_cost} inf".format(**card_info).title()
+        infline = FACTIONS[card_info["faction_code"]]+", {faction_cost} inf".format(**card_info).title()
     else:
-        infline = "{faction_code}".format(**card_info).title()
+        infline = FACTIONS[card_info["faction_code"]]
 
         
     if card_info["type_code"] == "agenda":
@@ -154,6 +154,7 @@ def execute_system(texttouple):
       return ':triumph:'
     if text == 'ulrik':
       return 'I think you mean [[corroder]].'
+    return ""
     
 def psi_game(vals):
   if len(vals) > 0 and vals[0].isdigit() and int(vals[0]) >= 0 and int(vals[0]) < 3:
