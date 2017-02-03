@@ -100,7 +100,7 @@ def card_info_string(index):
         
     if card_info["type_code"] == "agenda":
         statline = (
-            "Advancement requirement: {advancement_cost}, agenda points: {agenda_points}"
+			"Advancement requirement: {advancement_cost}, "+CUSTOMEMOJI["[agenda]"]+": {agenda_points}"
         ).format(**card_info)
     else:
         statline = ""
