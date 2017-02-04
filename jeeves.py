@@ -133,16 +133,14 @@ def card_info_string(index):
         
 
 def clean_text(text):
-    strong_tag_regex = r"</?strong>" # matches <strong> and </strong>
+    	strong_tag_regex = r"</?strong>" # matches <strong> and </strong>
+	errata_tag_regex = r"</?errata>" # matches <errata> and </errata>
 
-    text = re.sub(strong_tag_regex, "**", text)
-    for symbol in CUSTOMEMOJI:
-        text = text.replace(symbol, CUSTOMEMOJI[symbol])
-        
-    
-    
-    
-    return text
+    	text = re.sub(strong_tag_regex, "**", text)
+	text = re.sub(errata_tag_regex, "*", text)
+    	for symbol in CUSTOMEMOJI:
+        	text = text.replace(symbol, CUSTOMEMOJI[symbol])
+ 	return text
   
 def execute_system(texttouple):
     text, vals = texttouple
