@@ -1,10 +1,11 @@
 import discord, json, re, requests, subprocess, sys, random
 from fuzzywuzzy import process
 
+
 from secrets import JEEVES_KEY
 from abbreviations import ABBREVIATIONS
 from customemoji import CUSTOMEMOJI, FACTIONS
-
+from damonquotes import QUOTE_LIST
 
 ##### NRDB lookup bot.
 ##### Responds to [[cardnames]] with a message with info.
@@ -147,13 +148,16 @@ def execute_system(texttouple):
     text, vals = texttouple
     vals = vals.split()
     if text == 'psi':
-      return psi_game(vals)
-    if text == 'update':
-      restart()
-    if text == 'eirik':
-      return ':triumph:'
-    if text == 'ulrik':
-      return 'I think you mean [[corroder]].'
+        return psi_game(vals)
+    elif text == 'update':
+        restart()
+    elif text == 'eirik':
+        return ':triumph:'
+    elif text == 'ulrik':
+        return 'I think you mean [[corroder]].'
+    if text == 'damon':
+        return random.choice(QUOTE_LIST)
+  
     return ""
     
 def psi_game(vals):
