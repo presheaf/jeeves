@@ -13,15 +13,15 @@ FACTIONS = {
 	'criminal': '<:crim:276441039261270016>',
 	'shaper': '<:shaper:276443214431387648>',
 	'anarch': '<:anarch:276441739584208896>',
-     'apex': '<:recred:276444291465740288>', #fix this
-    'sunny-lebeau': '<:recred:276444291465740288>', #fix this
-    'adam': '<:recred:276444291465740288>', #fix this
-    'neutral-runner': '<:recred:276444291465740288>', #fix this
+     'apex': '<:apex:277414220730204160>', #fix this
+    'sunny-lebeau': '<:lebeau:277413902780989440>', #fix this
+    'adam': '<:adam:277414232130191363>', #fix this
+    'neutral-runner': 'Neutral', #fix this
     
     
 	'nbn': '<:nbn:276442725769936897>',
 	'haas-bioroid': '<:hb:276444251456536576>',
 	'jinteki': '<:jinteki:276442011060535296>',
 	'weyland-consortium': '<:weyland:276444202282254337>',
-    'neutral-corp': '<:recred:276444291465740288>' #fix this
+    'neutral-corp': 'Neutral' #fix this
 }
