@@ -3,7 +3,7 @@ from fuzzywuzzy import process
 
 
 from secrets import JEEVES_KEY
-from abbreviations import ABBREVIATIONS
+from abbreviations import ABBREVIATIONS, SUPERSCRIPTS
 from customemoji import CUSTOMEMOJI, FACTIONS
 from damonquotes import QUOTE_LIST
 
