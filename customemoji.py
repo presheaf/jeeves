@@ -10,18 +10,18 @@ CUSTOMEMOJI = {
   }
 
 FACTIONS = {
-	'criminal': '<:crim:276441039261270016>',
-	'shaper': '<:shaper:276443214431387648>',
-	'anarch': '<:anarch:276441739584208896>',
+	'criminal': '<:crim:277415785884811274>',
+	'shaper': '<:shaper:277415912594866177>',
+	'anarch': '<:anarch:277415935625658378>',
      'apex': '<:apex:277414220730204160>', #fix this
     'sunny-lebeau': '<:lebeau:277413902780989440>', #fix this
     'adam': '<:adam:277414232130191363>', #fix this
     'neutral-runner': 'Neutral', #fix this
     
     
-	'nbn': '<:nbn:276442725769936897>',
-	'haas-bioroid': '<:hb:276444251456536576>',
-	'jinteki': '<:jinteki:276442011060535296>',
-	'weyland-consortium': '<:weyland:276444202282254337>',
+	'nbn': '<:nbn:277415892437041152>',
+	'haas-bioroid': '<:hb:277415838393565186>',
+	'jinteki': '<:jinteki:277415875743711232>',
+	'weyland-consortium': '<:weyland:277415964474343424>',
     'neutral-corp': 'Neutral' #fix this
 }
