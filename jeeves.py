@@ -81,7 +81,7 @@ def card_info_string(index):
     card_info["text"] = clean_text(card_info["text"])
     name = card_info["title"]
     if card_info["uniqueness"]:
-        name = "⯁ " + name
+        name = "◇ " + name
     
     if "keywords" in card_info:
         typeline = (
