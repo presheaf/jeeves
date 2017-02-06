@@ -236,7 +236,8 @@ ABBREVIATIONS = {
     'eirik': 'Leela Patel: Trained Pragmatist',
     'karl erik': 'Rielle "Kit" Peddler',
     'potato': 'Jinteki: Potential Unleashed',
-    'nikolai': 'Jesminder Sareen: Girl Behind The Curtain'
+    'nikolai': 'Jesminder Sareen: Girl Behind The Curtain',
+    'ulrik': 'Paper clip'
 }
 
 SUPERSCRIPTS = {
