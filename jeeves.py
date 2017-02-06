@@ -116,11 +116,16 @@ def card_info_string(index):
 
             
     if card_info["type_code"] == "identity": # card is an ID
+        try:
+            linkinfo = ", {numlink} {linkemoji}".format(linkemoji=CUSTOMEMOJI["[link]"],
+                                                        numlink=card_info["base_link"])
+        except:
+            pass
         return (
             "**{title}**\n"
-            "*{infline} {minimum_deck_size}/{influence_limit}*\n\n"
+            "*{infline} {minimum_deck_size}/{influence_limit} {linkinfo}*\n\n"
             "{text}\n\n*{flavor}*"
-        ).format(infline=infline, **card_info)
+        ).format(infline=infline, linkinfo=linkinfo, **card_info)
     else: # card is a "normal" card
         cardtext = card_info["text"]
         if "flavor" in card_info:
