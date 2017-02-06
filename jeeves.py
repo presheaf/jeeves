@@ -118,7 +118,7 @@ def card_info_string(index):
     if card_info["type_code"] == "identity": # card is an ID
         return (
             "**{title}**\n"
-            "*{infline}, {minimum_deck_size}/{influence_limit}*\n\n"
+            "*{infline} {minimum_deck_size}/{influence_limit}*\n\n"
             "{text}\n\n*{flavor}*"
         ).format(infline=infline, **card_info)
     else: # card is a "normal" card
