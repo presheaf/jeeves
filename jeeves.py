@@ -81,7 +81,7 @@ def card_info_string(index):
     card_info["text"] = clean_text(card_info["text"])
     name = card_info["title"]
     if card_info["uniqueness"]:
-        name = ":eight_pointed_black_star: " + name
+        name = "⯁ " + name
     
     if "keywords" in card_info:
         typeline = (
@@ -93,10 +93,12 @@ def card_info_string(index):
         ).format(**card_info).title()
 
         
-    if "faction_cost" in card_info:
-        infline = FACTIONS[card_info["faction_code"]]+", {faction_cost} inf".format(**card_info).title()
-    else:
-        infline = FACTIONS[card_info["faction_code"]]
+    try:
+        infcost = int(card_info["faction_cost"])
+    except (KeyError, ValueError): #card has no inf cost or inf cost is not a number
+        infcost = 0
+        
+    infline = FACTIONS[card_info["faction_code"]]+" " + "●"*infcost
 
         
     if card_info["type_code"] == "agenda":
