@@ -233,11 +233,12 @@ ABBREVIATIONS = {
     'csm': 'Clone Suffrage Movement',
     'beth': 'Beth Kilrain-Chang',
     'eli': 'Eli 1.0',
-    'eirik': 'Leela Patel: Trained Pragmatist',
+    'eirik': 'Leela Patel',
     'karl erik': 'Rielle "Kit" Peddler',
-    'potato': 'Jinteki: Potential Unleashed',
-    'nikolai': 'Jesminder Sareen: Girl Behind The Curtain',
-    'ulrik': 'Paper clip'
+    'potato': 'Potential Unleashed',
+    'nikolai': 'Jesminder Sareen',
+    'ulrik': 'Paperclip',
+    'kate': 'Kate "Mac" McAffrey"
 }
 
 SUPERSCRIPTS = {
