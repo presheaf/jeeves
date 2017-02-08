@@ -238,7 +238,7 @@ ABBREVIATIONS = {
     'potato': 'Potential Unleashed',
     'nikolai': 'Jesminder Sareen',
     'ulrik': 'Paperclip',
-    'kate': 'Kate "Mac" McAffrey"
+    'kate': 'Kate "Mac" McAffrey'
 }
 
 SUPERSCRIPTS = {
