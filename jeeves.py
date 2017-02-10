@@ -178,6 +178,8 @@ def execute_system(texttouple):
         return random.choice(QUOTE_LIST)
     elif text == 'nikolai':
         return CUSTOMEMOJI['[hayley]']
+    elif text == 'core':
+        return 'Core 2.0 Confirmed'
     else:
         return None
     
