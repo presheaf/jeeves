@@ -77,7 +77,11 @@ def card_info_string(index):
     """
     Returns nicely formatted card info to send to chat.
     """
+    
     card_info = card_data[index]
+    if "text" not in card_info:
+        card_info["text"] = ""
+        print("blank")
     card_info["text"] = clean_text(card_info["text"])
     name = card_info["title"]
     if card_info["uniqueness"]:
@@ -120,10 +124,10 @@ def card_info_string(index):
             linkinfo = ", {numlink} {linkemoji}".format(linkemoji=CUSTOMEMOJI["[link]"],
                                                         numlink=card_info["base_link"])
         except:
-            pass
+            linkinfo = ""
         return (
             "**{title}**\n"
-            "*{infline} {minimum_deck_size}/{influence_limit} {linkinfo}*\n\n"
+            "*{infline} {minimum_deck_size}/{influence_limit}{linkinfo}*\n\n"
             "{text}\n\n*{flavor}*"
         ).format(infline=infline, linkinfo=linkinfo, **card_info)
     else: # card is a "normal" card
@@ -173,8 +177,6 @@ def execute_system(texttouple):
     elif text == 'damon':
         return random.choice(QUOTE_LIST)
     elif text == 'nikolai':
-        #img_url = r"https://images-cdn.fantasyflightgames.com/filer_public/0c/51/0c519389-3b04-45bb-9874-25eae21634eb/hayley_kaplan_alt_art_web.jpg"
-        #return img_url
         return CUSTOMEMOJI['[hayley]']
     else:
         return None
