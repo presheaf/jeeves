@@ -170,10 +170,10 @@ def execute_system(texttouple):
         return ':triumph:'
     elif text == 'ulrik':
         return 'I think you mean [[corroder]].'
-    if text == 'damon':
+    elif text == 'damon':
         return random.choice(QUOTE_LIST)
-  
-    return ""
+    else:
+        return None
     
 def psi_game(vals):
   if len(vals) > 0 and vals[0].isdigit() and int(vals[0]) >= 0 and int(vals[0]) < 3:
@@ -213,7 +213,8 @@ async def on_message(message):
         elif query_type == "system":
           msg = execute_system(query)
           #msg = "This is a system message. You wrote !{}".format(query)
-        await client.send_message(message.channel, msg)
+        if msg is not None:
+            await client.send_message(message.channel, msg)
 
 @client.event
 async def on_ready():
