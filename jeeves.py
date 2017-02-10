@@ -172,6 +172,9 @@ def execute_system(texttouple):
         return 'I think you mean [[corroder]].'
     elif text == 'damon':
         return random.choice(QUOTE_LIST)
+    elif text == 'nikolai':
+        img_url = r"https://images-cdn.fantasyflightgames.com/filer_public/0c/51/0c519389-3b04-45bb-9874-25eae21634eb/hayley_kaplan_alt_art_web.jpg"
+        return img_url
     else:
         return None
     
@@ -212,10 +215,10 @@ async def on_message(message):
              msg = msg + card_image_string(card_index)
         elif query_type == "system":
           msg = execute_system(query)
-          #msg = "This is a system message. You wrote !{}".format(query)
         if msg is not None:
             await client.send_message(message.channel, msg)
 
+            
 @client.event
 async def on_ready():
     print('Logged in as')
