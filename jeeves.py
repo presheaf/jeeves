@@ -173,8 +173,9 @@ def execute_system(texttouple):
     elif text == 'damon':
         return random.choice(QUOTE_LIST)
     elif text == 'nikolai':
-        img_url = r"https://images-cdn.fantasyflightgames.com/filer_public/0c/51/0c519389-3b04-45bb-9874-25eae21634eb/hayley_kaplan_alt_art_web.jpg"
-        return img_url
+        #img_url = r"https://images-cdn.fantasyflightgames.com/filer_public/0c/51/0c519389-3b04-45bb-9874-25eae21634eb/hayley_kaplan_alt_art_web.jpg"
+        #return img_url
+        return CUSTOMEMOJI['[hayley]']
     else:
         return None
     
