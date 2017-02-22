@@ -180,6 +180,10 @@ def execute_system(texttouple):
         return CUSTOMEMOJI['[hayley]']
     elif text == 'core':
         return 'Core 2.0 Confirmed'
+    elif text == 'timing':
+        return 'http://i.imgur.com/2vCRAl5.jpg'
+    elif text == 'turntiming':
+        return 'http://i.imgur.com/bnSC0Nv.jpg'
     else:
         return None
     
