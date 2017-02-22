@@ -237,8 +237,10 @@ ABBREVIATIONS = {
     'karl erik': 'Rielle "Kit" Peddler',
     'potato': 'Potential Unleashed',
     'nikolai': 'Jesminder Sareen',
-    'ulrik': 'Paperclip',
-    'kate': 'Kate "Mac" McAffrey'
+    'ulrik': 'Corroder',
+    'kate': 'Kate "Mac" McAffrey',
+    'snow-jax': 'Spoilers',
+    'snowjax': 'Spoilers'
 }
 
 SUPERSCRIPTS = {
