@@ -140,7 +140,7 @@ def card_info_string(index):
         
 
         return (
-            "**{name}**\n*{typeline}*\n{infline}\n{statline}\n"
+            "**{name}**\n*{typeline}*, {infline}\n{statline}\n"
             "{cardtext}"
         ).format(name=name, typeline=typeline, infline=infline,
                  statline=statline, cardtext=cardtext)
