@@ -117,6 +117,9 @@ def card_info_string(index):
             statline += "Strength: {strength} ".format(**card_info)
         if "trash_cost" in card_info:
             statline += "Trash: {trash_cost} ".format(**card_info)
+        if "memory_cost" in card_info:
+            statline += "Memory: {memory_cost} ".format(**card_info)
+
 
             
     if card_info["type_code"] == "identity": # card is an ID
@@ -214,14 +217,10 @@ async def on_message(message):
     for query, query_type in queries:
         if query_type != "system":
           card_index, matchness = find_match(query)
-          if matchness == 100:
-            msg = "Was *this* your card? \n\n"
-          else:
-            msg = "I am {}% sure that *this* was your card: \n\n".format(matchness)
           if query_type == "card":
-            msg = msg + card_info_string(card_index)
+            msg = card_info_string(card_index)
           else:
-             msg = msg + card_image_string(card_index)
+             msg = card_image_string(card_index)
         elif query_type == "system":
           msg = execute_system(query)
         if msg is not None:
