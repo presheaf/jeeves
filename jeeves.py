@@ -82,6 +82,10 @@ def card_info_string(index):
     if "text" not in card_info:
         card_info["text"] = ""
         print("blank")
+
+    if "flavor" not in card_info:
+        card_info["flavor"] = ""
+
     card_info["text"] = clean_text(card_info["text"])
     name = card_info["title"]
     if card_info["uniqueness"]:
