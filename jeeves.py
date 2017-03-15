@@ -82,14 +82,16 @@ def card_info_string(index):
     if "text" not in card_info:
         card_info["text"] = ""
         print("blank")
-
-    if "flavor" not in card_info:
-        card_info["flavor"] = ""
-
     card_info["text"] = clean_text(card_info["text"])
     name = card_info["title"]
     if card_info["uniqueness"]:
         name = "◇ " + name
+
+    if "flavor" in card_info:
+        flavortext = "\n\n*{flavor}*".format(card_info["flavor"])
+    else:
+        flavortext = ""
+
     
     if "keywords" in card_info:
         typeline = (
@@ -135,19 +137,19 @@ def card_info_string(index):
         return (
             "**{title}**\n"
             "*{infline} {minimum_deck_size}/{influence_limit}{linkinfo}*\n\n"
-            "{text}\n\n*{flavor}*"
-        ).format(infline=infline, linkinfo=linkinfo, **card_info)
+            "{text}{flavortext}"
+        ).format(infline=infline, linkinfo=linkinfo, 
+                 flavortext=flavortext, **card_info)
     else: # card is a "normal" card
-        cardtext = card_info["text"]
-        if "flavor" in card_info:
-            cardtext += "\n\n *{}*".format(card_info["flavor"])
+        cardtext = card_info["text"] 
+        
         
 
         return (
             "**{name}**\n*{typeline}*, {infline}\n{statline}\n"
-            "{cardtext}"
+            "{cardtext}{flavortext}"
         ).format(name=name, typeline=typeline, infline=infline,
-                 statline=statline, cardtext=cardtext)
+                 statline=statline, cardtext=cardtext, flavortext=flavortext)
         
 
 def clean_text(text):
