@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import discord, json, re, requests, subprocess, sys, random
+import discord, json, re, requests, subprocess, sys, random, time
 from fuzzywuzzy import process
 from googleapiclient.discovery import build
 
@@ -230,6 +230,8 @@ def image_search(vals):
 		    ).execute()
     if int(result['searchInformation']['totalResults']) > 0:
         print("Found image.")
+        if query.find("slowpoke") > -1:
+          time.sleep(10)
         return result['items'][0]['link']
     else:
         print("Did not find image.")
