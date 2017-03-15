@@ -88,7 +88,7 @@ def card_info_string(index):
         name = "◇ " + name
 
     if "flavor" in card_info:
-        flavortext = "\n\n*{flavor}*".format(card_info["flavor"])
+        flavortext = "\n\n*{flavor}*".format(flavor=card_info["flavor"])
     else:
         flavortext = ""
 
