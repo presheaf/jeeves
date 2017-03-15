@@ -1,8 +1,10 @@
+# -*- coding: utf-8 -*-
+
 import discord, json, re, requests, subprocess, sys, random
 from fuzzywuzzy import process
+from googleapiclient.discovery import build
 
-
-from secrets import JEEVES_KEY
+from secrets import JEEVES_KEY, GOOGLE_API_KEY, GOOGLE_SEARCH_CX
 from abbreviations import ABBREVIATIONS, SUPERSCRIPTS
 from customemoji import CUSTOMEMOJI, FACTIONS
 from damonquotes import QUOTE_LIST
@@ -23,7 +25,9 @@ IMAGE_URL_TEMPLATE = nrdb_api["imageUrlTemplate"]
 card_names = list(map(lambda card_dict: card_dict["title"].lower(),
                       card_data))
 
-SYSTEM_CALLS = ["update", "psi", "eirik", "ulrik"]
+googleSearcher = build("customsearch", "v1", developerKey=GOOGLE_API_KEY).cse()
+
+SYSTEM_CALLS = ["update", "psi", "eirik", "ulrik", "image"]
 
 def restart():
     """Call restart script and exit. 
@@ -168,6 +172,8 @@ def execute_system(texttouple):
     vals = vals.split()
     if text == 'psi':
         return psi_game(vals)
+    elif text == 'image':
+        return image_search(vals)
     elif text == 'update':
         restart()
     elif text == 'eirik':
@@ -202,12 +208,31 @@ def psi_game(vals):
   else:
     return "Protip: Actually bidding helps your chances."
 
+def image_search(vals):
+  if len(vals) > 0:
+    query = "+".join(vals)
+    print("Image search: "+query)
+    result = googleSearcher.list(
+		    q=query,
+		    cx=GOOGLE_SEARCH_CX,
+		    safe='high',
+		    num=1,
+		    searchType='image',
+		    ).execute()
+    if int(result['searchInformation']['totalResults']) > 0:
+        print("Found image.")
+        return result['items'][0]['link']
+    else:
+        print("Did not find image.")
+        return "No image found :("
+  else:
+    return "Usage: !image query"
 
 @client.event
 async def on_message(message):
     # we do not want the bot to reply to itself
     if message.author == client.user:
-        return
+	    return
     
     queries = extract_queries(message.content)
     
