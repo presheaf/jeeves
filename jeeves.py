@@ -27,7 +27,7 @@ card_names = list(map(lambda card_dict: card_dict["title"].lower(),
 
 googleSearcher = build("customsearch", "v1", developerKey=GOOGLE_API_KEY).cse()
 
-SYSTEM_CALLS = ["update", "psi", "eirik", "ulrik", "image"]
+SYSTEM_CALLS = ["update", "psi", "eirik", "ulrik", "image", "gif"]
 
 def restart():
     """Call restart script and exit. 
@@ -183,6 +183,8 @@ def execute_system(texttouple):
         return psi_game(vals)
     elif text == 'image':
         return image_search(vals)
+    elif text == 'gif':
+        return animate_search(vals)
     elif text == 'update':
         restart()
     elif text == 'eirik':
@@ -238,6 +240,30 @@ def image_search(vals):
         return "No image found :("
   else:
     return "Usage: !image query"
+
+def animate_search(vals):
+  if len(vals) > 0:
+    query = "+".join(vals)
+    print("Image search: "+query)
+    result = googleSearcher.list(
+		    q=query,
+		    cx=GOOGLE_SEARCH_CX,
+		    safe='high',
+		    num=1,
+		    searchType='image',
+		    fileType='gif',
+		    hq='animated',
+		    ).execute()
+    if int(result['searchInformation']['totalResults']) > 0:
+        print("Found animation.")
+        if query.find("slowpoke") > -1:
+          time.sleep(10)
+        return result['items'][0]['link']
+    else:
+        print("Did not find animation.")
+        return "No animation found :("
+  else:
+    return "Usage: !gif query"
 
 @client.event
 async def on_message(message):
