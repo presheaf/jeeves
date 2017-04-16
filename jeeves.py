@@ -28,13 +28,13 @@ card_names = list(map(lambda card_dict: card_dict["title"].lower(),
 googleSearcher = build("customsearch", "v1", developerKey=GOOGLE_API_KEY).cse()
 
 SYSTEM_CALLS = ["update", "psi", "eirik", "ulrik", "image", "gif"]
-LOG_FILE = "jeeveslog.log"
+# LOG_FILE = "jeeveslog.log"
 
 def print_message(message):
     print(message)
-    with open(LOG_FILE, "a+") as f:
-        f.write(message)
-        f.write("\n")
+    # with open(LOG_FILE, "a+") as f:
+    #     f.write(message)
+    #     f.write("\n")
 
 
 def restart():
