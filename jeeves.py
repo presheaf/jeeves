@@ -30,10 +30,10 @@ googleSearcher = build("customsearch", "v1", developerKey=GOOGLE_API_KEY).cse()
 SYSTEM_CALLS = ["update", "psi", "eirik", "ulrik", "image", "gif"]
 LOG_FILE = "jeeveslog.log"
 
-def print_message(msg):
+def print_message(message):
     print(message)
     with open(LOG_FILE, "a+") as f:
-        f.write(msg)
+        f.write(message)
         f.write("\n")
 
 
