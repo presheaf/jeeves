@@ -28,11 +28,19 @@ card_names = list(map(lambda card_dict: card_dict["title"].lower(),
 googleSearcher = build("customsearch", "v1", developerKey=GOOGLE_API_KEY).cse()
 
 SYSTEM_CALLS = ["update", "psi", "eirik", "ulrik", "image", "gif"]
+LOG_FILE = "jeeveslog.log"
+
+def print_message(msg):
+    print(message)
+    with open(LOG_FILE, "a+") as f:
+        f.write(msg)
+        f.write("\n")
+
 
 def restart():
     """Call restart script and exit. 
     Not clean but hopefully functional."""
-    print("Restarting")
+    print_message("Restarting")
     subprocess.Popen(["bash", "start.sh"])
     sys.exit(0)
 
@@ -59,16 +67,16 @@ def find_match(query):
     Also returns True if 'exact' match was found, or False if fuzzy matching was performed.
     """
     query = query.lower().strip()
-    print("Query: " + query)
+    print_message("Query: " + query)
     if query in ABBREVIATIONS:
-        print("Applying abbrev.")
+        print_message("Applying abbrev.")
         query = ABBREVIATIONS[query].lower()
         
     if query in card_names:
-        print("Matching from exact match.")
+        print_message("Matching from exact match.")
         return card_names.index(query), 100
     else:
-        print("Fuzzy matching.")
+        print_message("Fuzzy matching.")
         best_match, certainty = process.extract(query, card_names, limit=1)[0]
         return card_names.index(best_match), certainty
 
@@ -85,7 +93,7 @@ def card_info_string(index):
     card_info = card_data[index]
     if "text" not in card_info:
         card_info["text"] = ""
-        print("blank")
+        print_message("blank")
     card_info["text"] = clean_text(card_info["text"])
     name = card_info["title"]
     if card_info["uniqueness"]:
@@ -222,7 +230,7 @@ def psi_game(vals):
 def image_search(vals):
   if len(vals) > 0:
     query = "+".join(vals)
-    print("Image search: "+query)
+    print_message("Image search: "+query)
     result = googleSearcher.list(
 		    q=query,
 		    cx=GOOGLE_SEARCH_CX,
@@ -231,12 +239,12 @@ def image_search(vals):
 		    searchType='image',
 		    ).execute()
     if int(result['searchInformation']['totalResults']) > 0:
-        print("Found image.")
+        print_message("Found image.")
         if query.find("slowpoke") > -1:
           time.sleep(10)
         return result['items'][0]['link']
     else:
-        print("Did not find image.")
+        print_message("Did not find image.")
         return "No image found :("
   else:
     return "Usage: !image query"
@@ -244,7 +252,7 @@ def image_search(vals):
 def animate_search(vals):
   if len(vals) > 0:
     query = "+".join(vals)
-    print("Image search: "+query)
+    print_message("Image search: "+query)
     result = googleSearcher.list(
 		    q=query,
 		    cx=GOOGLE_SEARCH_CX,
@@ -255,12 +263,12 @@ def animate_search(vals):
 		    hq='animated',
 		    ).execute()
     if int(result['searchInformation']['totalResults']) > 0:
-        print("Found animation.")
+        print_message("Found animation.")
         if query.find("slowpoke") > -1:
           time.sleep(10)
         return result['items'][0]['link']
     else:
-        print("Did not find animation.")
+        print_message("Did not find animation.")
         return "No animation found :("
   else:
     return "Usage: !gif query"
@@ -288,9 +296,9 @@ async def on_message(message):
             
 @client.event
 async def on_ready():
-    print('Logged in as')
-    print(client.user.name)
-    print('------')
+    print_message('Logged in as')
+    print_message(client.user.name)
+    print_message('------')
 
 if __name__ == "__main__":    
     client.run(JEEVES_KEY)
