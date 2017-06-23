@@ -182,6 +182,8 @@ def clean_text(text):
     text = re.sub(trace_regex, tracify, text)
     for symbol in CUSTOMEMOJI:
         text = text.replace(symbol, CUSTOMEMOJI[symbol])
+    for symbol in FACTIONS:
+        text = text.replace('['+symbol+']', FACTIONS[symbol])
     return text
   
 def execute_system(texttouple):
@@ -209,6 +211,8 @@ def execute_system(texttouple):
         return 'http://i.imgur.com/2vCRAl5.jpg'
     elif text == 'turntiming':
         return 'http://i.imgur.com/bnSC0Nv.jpg'
+    elif text == 'BOOM':
+        return 'http://i.imgur.com/XTslY6N.png'
     else:
         return None
     
