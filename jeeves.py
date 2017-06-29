@@ -29,13 +29,13 @@ card_names = list(map(lambda card_dict: card_dict["title"].lower(),
 googleSearcher = build("customsearch", "v1", developerKey=GOOGLE_API_KEY).cse()
 
 SYSTEM_CALLS = ["update", "psi", "eirik", "ulrik", "image", "gif"]
-# LOG_FILE = "jeeveslog.log"
+LOG_FILE = "jeeveslog.log"
 
 def print_message(message):
     print(message)
-    # with open(LOG_FILE, "a+") as f:
-    #     f.write(message)
-    #     f.write("\n")
+    with open(LOG_FILE, "a+") as f:
+        f.write(message)
+        f.write("\n")
 
 
 def restart():
@@ -307,6 +307,7 @@ async def on_message(message):
         elif query_type == "system":
           msg = execute_system(query)
           if message.content.startswith('!echo'):
+            print_message("Forced by: " + message.author.name)
             await client.delete_message(message)
         if msg is not None:
             await client.send_message(message.channel, msg)
