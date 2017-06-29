@@ -4,6 +4,7 @@ import discord, json, re, requests, subprocess, sys, random, time
 from fuzzywuzzy import process
 from googleapiclient.discovery import build
 
+
 from secrets import JEEVES_KEY, GOOGLE_API_KEY, GOOGLE_SEARCH_CX
 from abbreviations import ABBREVIATIONS, SUPERSCRIPTS
 from customemoji import CUSTOMEMOJI, FACTIONS
@@ -213,6 +214,17 @@ def execute_system(texttouple):
         return 'http://i.imgur.com/bnSC0Nv.jpg'
     elif text == 'BOOM':
         return 'http://i.imgur.com/XTslY6N.png'
+    elif text == 'echo':
+        return echo_text(texttouple)
+    else:
+        return None
+
+
+def echo_text(texttouple):
+    text, vals = texttouple
+    if len(vals) > 0:
+        print_message("Forced to say: "+vals)
+        return vals
     else:
         return None
     
@@ -282,7 +294,7 @@ async def on_message(message):
     # we do not want the bot to reply to itself
     if message.author == client.user:
 	    return
-    
+
     queries = extract_queries(message.content)
     
     for query, query_type in queries:
@@ -294,6 +306,8 @@ async def on_message(message):
              msg = card_image_string(card_index)
         elif query_type == "system":
           msg = execute_system(query)
+          if message.content.startswith('!echo'):
+            await client.delete_message(message)
         if msg is not None:
             await client.send_message(message.channel, msg)
 
@@ -303,6 +317,8 @@ async def on_ready():
     print_message('Logged in as')
     print_message(client.user.name)
     print_message('------')
+
+
 
 if __name__ == "__main__":    
     client.run(JEEVES_KEY)
