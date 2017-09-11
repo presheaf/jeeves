@@ -203,7 +203,7 @@ def execute_system(texttouple):
     elif text == 'ulrik':
         return 'I think you mean [[corroder]].'
     elif text == 'christian':
-        return ':milk:'
+        return ':milk: :poop:'
     elif text == 'nikolai':
         return CUSTOMEMOJI['[hayley]']
     elif text == 'core':
