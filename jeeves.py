@@ -202,8 +202,8 @@ def execute_system(texttouple):
         return ':triumph:'
     elif text == 'ulrik':
         return 'I think you mean [[corroder]].'
-    elif text == 'damon':
-        return random.choice(QUOTE_LIST)
+    elif text == 'christian':
+        return ':milk:'
     elif text == 'nikolai':
         return CUSTOMEMOJI['[hayley]']
     elif text == 'core':
