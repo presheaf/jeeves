@@ -8,7 +8,7 @@ from googleapiclient.discovery import build
 from secrets import JEEVES_KEY, GOOGLE_API_KEY, GOOGLE_SEARCH_CX
 from abbreviations import ABBREVIATIONS, SUPERSCRIPTS
 from customemoji import CUSTOMEMOJI, FACTIONS
-from damonquotes import QUOTE_LIST
+from ripsave import RIP, SAVED
 
 ##### NRDB lookup bot.
 ##### Responds to [[cardnames]] with a message with info.
@@ -28,8 +28,8 @@ card_names = list(map(lambda card_dict: card_dict["title"].lower(),
 
 googleSearcher = build("customsearch", "v1", developerKey=GOOGLE_API_KEY).cse()
 
-SYSTEM_CALLS = ["update", "psi", "eirik", "ulrik", "image", "gif"]
 LOG_FILE = "jeeveslog.log"
+
 
 def print_message(message):
     print(message)
@@ -216,6 +216,12 @@ def execute_system(texttouple):
         return 'http://i.imgur.com/XTslY6N.png'
     elif text == 'echo':
         return echo_text(texttouple)
+    elif text == 'saved':
+        return saved()
+    elif text == 'rip':
+        return rip()
+    elif text == 'lazarus':
+        sys.exit(0)
     else:
         return None
 
@@ -242,6 +248,14 @@ def psi_game(vals):
     return "That's not even a number!"
   else:
     return "Protip: Actually bidding helps your chances."
+
+def rip():
+    cname = RIP[random.randint(0,len(RIP)-1)]
+    return ":skull_crossbones: "+cname + " is gone! Forever! :skull_crossbones:"
+
+def saved():
+	cname = SAVED[random.randint(0,len(SAVED)-1)]
+	return cname + " has been saved from the terrible beast of rotation! Praise Damon!"
 
 def image_search(vals):
   if len(vals) > 0:
