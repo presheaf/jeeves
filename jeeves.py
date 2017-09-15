@@ -97,11 +97,12 @@ def card_info_string(index):
         print_message("blank")
     card_info["text"] = clean_text(card_info["text"])
     name = card_info["title"]
+
+    if name in RIP:
+        name = name+":skull_crossbones:"
     if card_info["uniqueness"]:
         name = "◇ " + name
 
-    if name in RIP:
-        name = ":skull_crossbones: "+name+":skull_crossbones:"
 
     if "flavor" in card_info:
         flavortext = "\n\n*{flavor}*".format(flavor=card_info["flavor"])
