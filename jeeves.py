@@ -100,6 +100,9 @@ def card_info_string(index):
     if card_info["uniqueness"]:
         name = "◇ " + name
 
+    if name in RIP:
+        name = ":skull_crossbones: "+name+":skull_crossbones:"
+
     if "flavor" in card_info:
         flavortext = "\n\n*{flavor}*".format(flavor=card_info["flavor"])
     else:
@@ -332,7 +335,6 @@ async def on_ready():
     print_message('Logged in as')
     print_message(client.user.name)
     print_message('------')
-
 
 
 if __name__ == "__main__":    
