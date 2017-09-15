@@ -98,11 +98,11 @@ def card_info_string(index):
     card_info["text"] = clean_text(card_info["text"])
     name = card_info["title"]
 
-    if name in RIP:
-        name = name+":skull_crossbones:"
     if card_info["uniqueness"]:
         name = "◇ " + name
 
+    if card_info["title"] in RIP:
+        name = ":skull_crossbones: "+name
 
     if "flavor" in card_info:
         flavortext = "\n\n*{flavor}*".format(flavor=card_info["flavor"])
@@ -152,10 +152,10 @@ def card_info_string(index):
         except:
             linkinfo = ""
         return (
-            "**{title}**\n"
+            "**{name}**\n"
             "*{infline} {minimum_deck_size}/{influence_limit}{linkinfo}*\n\n"
             "{text}{flavortext}"
-        ).format(infline=infline, linkinfo=linkinfo, 
+        ).format(name=name, infline=infline, linkinfo=linkinfo, 
                  flavortext=flavortext, **card_info)
     else: # card is a "normal" card
         cardtext = card_info["text"] 
