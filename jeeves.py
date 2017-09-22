@@ -123,7 +123,8 @@ def card_info_string(index):
         
     try:
         infcost = int(card_info["faction_cost"])
-    except (KeyError, ValueError): #card has no inf cost or inf cost is not a number
+        #card might have a weird inf cost or inf cost is not a number
+    except (KeyError, ValueError, TypeError): 
         infcost = 0
         
     infline = FACTIONS[card_info["faction_code"]]+" " + "●"*infcost
