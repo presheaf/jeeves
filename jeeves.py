@@ -1,3 +1,4 @@
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
 
 import discord, json, re, requests, subprocess, sys, random, time
@@ -210,8 +211,10 @@ def execute_system(texttouple):
         return ':milk: :poop:'
     elif text == 'nikolai':
         return CUSTOMEMOJI['[hayley]']
+    elif text == 'vanadis':
+        return 'https://i.imgur.com/MJz4dAJ.jpg'
     elif text == 'core':
-        return 'Core 2.0 Confirmed'
+        return 'He warned us! Praise be the prophet!'
     elif text == 'timing':
         return 'http://i.imgur.com/2vCRAl5.jpg'
     elif text == 'turntiming':
