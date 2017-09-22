@@ -91,3 +91,5 @@ ENV/
 # Other
 secrets.py
 avatar.jpg
+rezz.sh
+twitter_secrets.py

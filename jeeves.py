@@ -1,11 +1,12 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import discord, json, re, requests, subprocess, sys, random, time
+import discord, json, re, requests, subprocess, sys, random, time, tweepy
 from fuzzywuzzy import process
 from googleapiclient.discovery import build
 
 
+from twitter_secrets import CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TOKEN, ACCESS_TOKEN_SECRET
 from secrets import JEEVES_KEY, GOOGLE_API_KEY, GOOGLE_SEARCH_CX
 from abbreviations import ABBREVIATIONS, SUPERSCRIPTS
 from customemoji import CUSTOMEMOJI, FACTIONS
@@ -30,6 +31,11 @@ card_names = list(map(lambda card_dict: card_dict["title"].lower(),
 googleSearcher = build("customsearch", "v1", developerKey=GOOGLE_API_KEY).cse()
 
 LOG_FILE = "jeeveslog.log"
+
+# Twitter setup
+twitterAuth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
+twitterAuth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
+twitterAPI = tweepy.API(twitterAuth)
 
 
 def print_message(message):
@@ -228,6 +234,8 @@ def execute_system(texttouple):
         return saved()
     elif text == 'rip':
         return rip()
+    elif text == 'drills':
+        return drillstweets()
     elif text == 'lazarus':
         sys.exit(0)
     else:
@@ -264,6 +272,16 @@ def rip():
 def saved():
 	cname = SAVED[random.randint(0,len(SAVED)-1)]
 	return cname + " has been saved from the terrible beast of rotation! Praise Damon!"
+
+def drillstweets():
+	all_tweets = twitterAPI.user_timeline(screen_name="drilrunner",count=200)
+	while True:
+		r = random.randrange(0, len(all_tweets)-1)
+		tweet = all_tweets[r]
+		if 'media' in tweet.entities:
+			return tweet.entities['media'][0]['media_url']
+		all_tweets.pop(r)
+
 
 def image_search(vals):
   if len(vals) > 0:
