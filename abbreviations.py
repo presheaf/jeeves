@@ -240,7 +240,9 @@ ABBREVIATIONS = {
     'ulrik': 'Corroder',
     'kate': 'Kate "Mac" McAffrey',
     'snow-jax': 'Spoilers',
-    'snowjax': 'Spoilers'
+    'snowjax': 'Spoilers',
+    'rpc': 'Red Planet Couriers',
+    'sva': 'Salvaged Vanadis Armory'
 }
 
 SUPERSCRIPTS = {

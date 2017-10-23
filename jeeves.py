@@ -222,10 +222,10 @@ def execute_system(texttouple):
         return 'https://i.imgur.com/MJz4dAJ.jpg'
     elif text == 'core':
         return 'He warned us! Praise be the prophet!'
-    elif text == 'timing':
-        return 'http://i.imgur.com/2vCRAl5.jpg'
+    elif text == 'timing' or text == 'runtiming':
+        return 'http://i.imgur.com/dwYTrfF.jpg'
     elif text == 'turntiming':
-        return 'http://i.imgur.com/bnSC0Nv.jpg'
+        return 'http://i.imgur.com/phgyb33.jpg'
     elif text == 'BOOM':
         return 'http://i.imgur.com/XTslY6N.png'
     elif text == 'echo':
