@@ -13,17 +13,28 @@ from customemoji import CUSTOMEMOJI, FACTIONS
 from ripsave import RIP, SAVED
 
 ##### NRDB lookup bot.
-##### Responds to [[cardnames]] with a message with info.
+##### Responds to [[cardnames]] with a message with info. And a bunch of other things
 
 ##### TODO: make card formatting nicer
 ##### TODO: add support for requesting images
 
 client = discord.Client()
 
-url = "https://netrunnerdb.com/api/2.0/public/cards"
-nrdb_api = requests.get(url).json()
-card_data = nrdb_api["data"]
-IMAGE_URL_TEMPLATE = nrdb_api["imageUrlTemplate"]
+url = "https://netrunnerdb.com/api/2.0/public/"
+cardurl = url+"cards"
+packurl = url+"packs"
+cycleurl = url+"cycles"
+
+nrdb_card_api = requests.get(cardurl).json()
+card_data = nrdb_card_api["data"]
+
+nrdb_pack_api = requests.get(packurl).json()
+pack_data = nrdb_pack_api["data"]
+
+nrdb_cycle_api = requests.get(cycleurl).json()
+cycle_data = nrdb_cycle_api["data"]
+
+IMAGE_URL_TEMPLATE = nrdb_card_api["imageUrlTemplate"]
 
 card_names = list(map(lambda card_dict: card_dict["title"].lower(),
                       card_data))
@@ -112,7 +123,7 @@ def card_info_string(index):
         name = ":skull_crossbones: "+name
 
     if "flavor" in card_info:
-        flavortext = "\n\n*{flavor}*".format(flavor=card_info["flavor"])
+        flavortext = clean_text("\n\n*{flavor}*".format(flavor=card_info["flavor"]))
     else:
         flavortext = ""
 
@@ -150,6 +161,10 @@ def card_info_string(index):
             statline += "Trash: {trash_cost} ".format(**card_info)
         if "memory_cost" in card_info:
             statline += "Memory: {memory_cost} ".format(**card_info)
+    
+    packd = next(filter(lambda pack: pack["code"] == card_info["pack_code"], pack_data))
+    cycled = next(filter(lambda cycle: cycle["code"] == packd["cycle_code"], cycle_data))
+    packline = "\n\n*" + packd["name"] + " - " + cycled["name"] + "* #"+str(card_info["position"])
 
 
             
@@ -162,9 +177,9 @@ def card_info_string(index):
         return (
             "**{name}**\n"
             "*{infline} {minimum_deck_size}/{influence_limit}{linkinfo}*\n\n"
-            "{text}{flavortext}"
+            "{text}{flavortext}{packline}"
         ).format(name=name, infline=infline, linkinfo=linkinfo, 
-                 flavortext=flavortext, **card_info)
+                 flavortext=flavortext, packline=packline, **card_info)
     else: # card is a "normal" card
         cardtext = card_info["text"] 
         
@@ -172,9 +187,9 @@ def card_info_string(index):
 
         return (
             "**{name}**\n*{typeline}*, {infline}\n{statline}\n"
-            "{cardtext}{flavortext}"
+            "{cardtext}{flavortext}{packline}"
         ).format(name=name, typeline=typeline, infline=infline,
-                 statline=statline, cardtext=cardtext, flavortext=flavortext)
+                 statline=statline, cardtext=cardtext, flavortext=flavortext, packline=packline)
         
 
 def clean_text(text):
@@ -233,7 +248,7 @@ def execute_system(texttouple):
     elif text == 'saved':
         return saved()
     elif text == 'rip':
-        return rip()
+        return rip(vals)
     elif text == 'drills':
         return drillstweets()
     elif text == 'lazarus':
@@ -265,8 +280,12 @@ def psi_game(vals):
   else:
     return "Protip: Actually bidding helps your chances."
 
-def rip():
-    cname = RIP[random.randint(0,len(RIP)-1)]
+def rip(vals):
+    if len(vals) > 0:
+        searchterm = " ".join(vals).lower().strip()
+        cname, certainty = process.extract(searchterm, RIP, limit=1)[0]
+    else:
+        cname = RIP[random.randint(0,len(RIP)-1)]
     return ":skull_crossbones: "+cname + " is gone! Forever! :skull_crossbones:"
 
 def saved():
