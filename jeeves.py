@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import discord, json, re, requests, subprocess, sys, random, time, tweepy
-from fuzzywuzzy import process
+from fuzzywuzzy import process, fuzz
 from googleapiclient.discovery import build
 
 
@@ -96,7 +96,7 @@ def find_match(query):
         return card_names.index(query), 100
     else:
         print_message("Fuzzy matching.")
-        best_match, certainty = process.extract(query, card_names, limit=1)[0]
+        best_match, certainty = process.extractOne(query, card_names, scorer=fuzz.partial_token_set_ratio)
         return card_names.index(best_match), certainty
 
 
