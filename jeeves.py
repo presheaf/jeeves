@@ -43,6 +43,10 @@ googleSearcher = build("customsearch", "v1", developerKey=GOOGLE_API_KEY).cse()
 
 LOG_FILE = "jeeveslog.log"
 
+lastQuery = None
+lastQueryCounter = 0
+lastQueryImage = False
+
 # Twitter setup
 twitterAuth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
 twitterAuth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
@@ -80,7 +84,7 @@ def extract_queries(msg_text):
          for match in re.finditer(system_query_regex, msg_text)]
     )
 
-def find_match(query):
+def find_match(query, position):
     """
     Returns index of card matching query in the card name list.
     Also returns True if 'exact' match was found, or False if fuzzy matching was performed.
@@ -96,7 +100,7 @@ def find_match(query):
         return card_names.index(query), 100
     else:
         print_message("Fuzzy matching.")
-        best_match, certainty = process.extractOne(query, card_names, scorer=fuzz.partial_token_set_ratio)
+        best_match, certainty = process.extract(query, card_names, scorer=fuzz.partial_token_set_ratio, limit=(lastQueryCounter+1))[lastQueryCounter]
         return card_names.index(best_match), certainty
 
 
@@ -232,7 +236,7 @@ def execute_system(texttouple):
     elif text == 'christian':
         return ':milk: :poop:'
     elif text == 'nikolai':
-        return CUSTOMEMOJI['[hayley]']
+        return CUSTOMEMOJI['[gianthead]']
     elif text == 'vanadis':
         return 'https://i.imgur.com/MJz4dAJ.jpg'
     elif text == 'core':
@@ -249,6 +253,8 @@ def execute_system(texttouple):
         return saved()
     elif text == 'rip':
         return rip(vals)
+    elif text == 'jvspls':
+        return sosorry()
     elif text == 'drills':
         return drillstweets()
     elif text == 'lazarus':
@@ -300,6 +306,21 @@ def drillstweets():
 		if 'media' in tweet.entities:
 			return tweet.entities['media'][0]['media_url']
 		all_tweets.pop(r)
+
+def sosorry():
+	if lastQuery is not None:
+		msg = "I'm so sorry, of course I meant\n"
+		global lastQueryCounter
+		lastQueryCounter += 1
+		card_index, matchness = find_match(lastQuery, lastQueryCounter)
+		if lastQueryImage:
+			msg += card_image_string(card_index)
+		else:
+			msg += card_info_string(card_index)
+		return msg
+	else:
+		return None
+
 
 
 def image_search(vals):
@@ -358,10 +379,17 @@ async def on_message(message):
     
     for query, query_type in queries:
         if query_type != "system":
-          card_index, matchness = find_match(query)
+          global lastQuery, lastQueryCounter
+          lastQuery = query
+          lastQueryCounter = 0
+          card_index, matchness = find_match(query, lastQueryCounter)
+          lastQuery = query
+          lastQueryCounter = 0
           if query_type == "card":
+            lastQueryImage = False
             msg = card_info_string(card_index)
           else:
+             lastQueryImage = True
              msg = card_image_string(card_index)
         elif query_type == "system":
           msg = execute_system(query)

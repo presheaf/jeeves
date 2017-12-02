@@ -7,7 +7,8 @@ CUSTOMEMOJI = {
   '[link]': '<:lnk:276444277314289665>',
   '[subroutine]': '<:sub:276443224413962252>',
   '[agenda]': '<:agenda:276444224751271936>',
-  '[hayley]': '<:hayley:279579225948946432>'
+  '[hayley]': '<:hayley:279579225948946432>',
+  '[gianthead]': '<:gianthead:382869643695620107>'
   }
 
 FACTIONS = {
