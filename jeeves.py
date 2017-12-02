@@ -379,7 +379,7 @@ async def on_message(message):
     
     for query, query_type in queries:
         if query_type != "system":
-          global lastQuery, lastQueryCounter
+          global lastQuery, lastQueryCounter, lastQueryImage
           lastQuery = query
           lastQueryCounter = 0
           card_index, matchness = find_match(query, lastQueryCounter)
