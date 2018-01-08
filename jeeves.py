@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import discord, re
+import discord, re, subprocess
 
 from secrets import JEEVES_KEY
 
@@ -22,10 +22,10 @@ LOG_FILE = "jeeveslog.log"
 jeeves = JeevesBot(LOG_FILE)
 
 def restart():
-	"""Call restart script and exit. 
-	Not clean but hopefully functional."""
-	subprocess.Popen(["bash", "start.sh"])
-	sys.exit(0)
+	"""
+	Pulls newest version of jeevesbot and reloads jeevesbot
+	"""
+	return None
 
 def extract_queries(msg_text):
 	"""

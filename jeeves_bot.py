@@ -9,7 +9,7 @@ from twitter_secrets import CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TOKEN, ACCESS_
 from secrets import GOOGLE_API_KEY, GOOGLE_SEARCH_CX
 from ripsave import RIP, SAVED
 from customemoji import CUSTOMEMOJI, FACTIONS
-from abbreviations import ABBREVIATIONS, SUPERSCRIPTS
+from abbreviations import ABBREVIATIONS, SUPERSCRIPTS, PACKARRAY, PACKARRAY2
 
 class JeevesBot:
 
@@ -54,7 +54,8 @@ class JeevesBot:
 		self.pack_data = nrdb_pack_api["data"]
 		self.cycle_data = nrdb_cycle_api["data"]
 		self.card_names = list(map(lambda card_dict: card_dict["title"].lower(), self.card_data))
-		self.IMAGE_URL_TEMPLATE = nrdb_card_api["imageUrlTemplate"]
+		self.NRDB_URL_TEMPLATE = nrdb_card_api["imageUrlTemplate"]
+		self.CGDB_URL_TEMPLATE = "http://www.cardgamedb.com/forums/uploads/an/med_ADN{packcode}_{cardcode}.png"
 
 	
 
@@ -242,7 +243,18 @@ class JeevesBot:
 
 	
 	def card_image_string(self, index):
-		return self.IMAGE_URL_TEMPLATE.format(code=self.card_data[index]["code"])
+		card_info = self.card_data[index]
+		packd = next(filter(lambda pack: pack["code"] == card_info["pack_code"], self.pack_data))
+		cycled = next(filter(lambda cycle: cycle["code"] == packd["cycle_code"], self.cycle_data))
+		if (cycled["position"] < 6) or (cycled["position"]==6 and packd["position"]==1):
+			return self.NRDB_URL_TEMPLATE.format(code=card_info["code"])
+		else:
+			if cycled["position"] < 20:
+				packcode = PACKARRAY[cycled["position"]-6]+packd["position"]
+			else:
+				packcode = PACKARRAY2[cycled["position"]-20]+packd["position"]
+			cardcode = card_info["position"]
+			return self.CGDB_URL_TEMPLATE.format(packcode=packcode, cardcode=cardcode)
 
 	
 	def card_info_string(self, index):
