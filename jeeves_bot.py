@@ -105,7 +105,7 @@ class JeevesBot:
 		elif text == 'echo':
 			return self.echo_text(vals)
 		elif text == 'saved':
-			return self.saved()
+			return self.saved(vals)
 		elif text == 'rip':
 			return self.rip(vals)
 		elif text == 'jvspls':
@@ -147,8 +147,12 @@ class JeevesBot:
 			cname = RIP[random.randint(0,len(RIP)-1)]
 		return ":skull_crossbones: "+cname + " is gone! Forever! :skull_crossbones:"
 
-	def saved(self):
-		cname = SAVED[random.randint(0,len(SAVED)-1)]
+	def saved(self, vals):
+		if len(vals) > 0:
+			searchterm = " ".join(vals).lower().strip()
+			cname, certainty = process.extract(searchterm, SAVED, limit=1)[0]
+		else:
+			cname = SAVED[random.randint(0,len(SAVED)-1)]
 		return cname + " has been saved from the terrible beast of rotation! Praise Damon!"
 
 	def drillstweets(self):

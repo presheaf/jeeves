@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import discord, re, subprocess
+import discord, re, subprocess, importlib
 
 from secrets import JEEVES_KEY
 
@@ -25,7 +25,11 @@ def restart():
 	"""
 	Pulls newest version of jeevesbot and reloads jeevesbot
 	"""
-	return None
+	subprocess.call(["git", "fetch"])
+	subprocess.call(["git", "checkout jeeves_bot.py"])
+	importlib.reload(JeevesBot)
+	jeeves = JeevesBot(LOG_FILE)
+	return "Bot Updated!"
 
 def extract_queries(msg_text):
 	"""
