@@ -240,9 +240,9 @@ class JeevesBot:
 			self.print_message("Matching from exact match.")
 			return self.card_names.index(query), 100
 		else:
-			self.print_message("Fuzzy matching.")
+			self.print_message("Fuzzy matching, finding match no: "+str(lQQ))
 			best_match, certainty = process.extract(query, self.card_names, 
-					scorer=fuzz.partial_token_set_ratio, limit=(lQQ+1))[lQQ]
+					limit=(lQQ+1))[lQQ]
 			return self.card_names.index(best_match), certainty
 
 	
