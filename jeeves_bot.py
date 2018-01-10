@@ -9,7 +9,7 @@ from twitter_secrets import CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TOKEN, ACCESS_
 from secrets import GOOGLE_API_KEY, GOOGLE_SEARCH_CX
 from ripsave import RIP, SAVED
 from customemoji import CUSTOMEMOJI, FACTIONS
-from abbreviations import ABBREVIATIONS, SUPERSCRIPTS, PACKARRAY, PACKARRAY2
+from abbreviations import ABBREVIATIONS, SUPERSCRIPTS
 
 class JeevesBot:
 
@@ -38,9 +38,10 @@ class JeevesBot:
 		self.googleSearcher = build("customsearch", "v1", developerKey=GOOGLE_API_KEY).cse()
 
 		#NRDB Setup
-		self.NRDBGet()
+		self.NRDBGet(None)
 
-	def NRDBGet(self):
+	def NRDBGet(self, vals):
+		self.print_message('Downloading NRDB API')
 		nrdburl = "https://netrunnerdb.com/api/2.0/public/"
 		cardurl = nrdburl+"cards"
 		packurl = nrdburl+"packs"
@@ -55,8 +56,7 @@ class JeevesBot:
 		self.cycle_data = nrdb_cycle_api["data"]
 		self.card_names = list(map(lambda card_dict: card_dict["title"].lower(), self.card_data))
 		self.NRDB_URL_TEMPLATE = nrdb_card_api["imageUrlTemplate"]
-		self.CGDB_URL_TEMPLATE = "http://www.cardgamedb.com/forums/uploads/an/med_ADN{packcode}_{cardcode}.png"
-
+		return 'Cardlist Updated!'
 	
 
 	def print_message(self, message):
@@ -74,46 +74,46 @@ class JeevesBot:
 	def execute_system(self, texttouple):
 		text, vals = texttouple
 		vals = vals.split()
-		if text == 'psi':
-			return self.psi_game(vals)
-		elif text == 'image':
-			return self.image_search(vals)
-		elif text == 'gif':
-			return self.animate_search(vals)
-		elif text == 'update':
-			self.print_message('Updating NRDB API')
-			self.NRDBGet()
-			return 'Cardlist updated!'
-		elif text == 'eirik':
-			return ':triumph:'
-		elif text == 'ulrik':
-			return 'I think you mean [[corroder]].'
-		elif text == 'christian':
-			return ':milk: :poop:'
-		elif text == 'nikolai':
-			return CUSTOMEMOJI['[gianthead]']
-		elif text == 'vanadis':
-			return 'https://i.imgur.com/MJz4dAJ.jpg'
-		elif text == 'core':
-			return 'He warned us! Praise be the prophet!'
-		elif text == 'timing' or text == 'runtiming':
-			return 'http://i.imgur.com/dwYTrfF.jpg'
-		elif text == 'turntiming':
-			return 'http://i.imgur.com/phgyb33.jpg'
-		elif text == 'BOOM':
-			return 'http://i.imgur.com/XTslY6N.png'
-		elif text == 'echo':
-			return self.echo_text(vals)
-		elif text == 'saved':
-			return self.saved(vals)
-		elif text == 'rip':
-			return self.rip(vals)
-		elif text == 'jvspls':
-			return self.sosorry()
-		elif text == 'drills':
-			return self.drillstweets()
+		
+		textDict = {
+				'timing': 'https://i.imgur.com/dwYTrfF.jpg',
+				'runtiming': 'https://i.imgur.com/dwYTrfF.jpg',
+				'turntiming': 'https://i.imgur.com/phgyb33.jpg',
+				'eirik': ':triumph:',
+				'nikolai': CUSTOMEMOJI['[gianthead]'],
+				'ulrik': 'I think you mean [[corroder]].',
+				'christian': ':milk: :poop:',
+				'vanadis': 'https://i.imgur.com/MJz4dAJ.jpg',
+				'core': 'He warned us! Praise be the prophet!',
+				'BOOM': 'http://i.imgur.com/XTslY6N.png'
+				}
+
+		functionDict = {
+				'psi': self.psi_game,
+				'image': self.image_search,
+				'gif': self.animate_search,
+				'rip': self.rip,
+				'saved': self.saved,
+				'jvspls': self.sosorry,
+				'jeevespls': self.sosorry,
+				'jvsplease': self.sosorry,
+				'jeevesplease': self.sosorry,
+				'drils': self.drillstweets,
+				'drills': self.drillstweets,
+				'echo': self.echo,
+				'update': self.NRDBGet
+				}
+
+
+		if text in textDict:
+			return textDict[text]
+
+		elif text in functionDict:
+			return functionDict[text](vals)
+
 		elif text == 'lazarus':
 			sys.exit(0)
+
 		else:
 			return None
 
@@ -155,7 +155,7 @@ class JeevesBot:
 			cname = SAVED[random.randint(0,len(SAVED)-1)]
 		return cname + " has been saved from the terrible beast of rotation! Praise Damon!"
 
-	def drillstweets(self):
+	def drillstweets(self, vals):
 		all_tweets = self.twitterAPI.user_timeline(screen_name="drilrunner",count=200)
 		while len(all_tweets) > 0:
 			r = random.randrange(0, len(all_tweets)-1)
@@ -164,7 +164,7 @@ class JeevesBot:
 				return tweet.entities['media'][0]['media_url']
 			all_tweets.pop(r)
 
-	def sosorry(self):
+	def sosorry(self, vals):
 		if self.lastQuery is not None:
 			msg = "I'm so sorry, of course I meant\n"
 			self.lastQueryCounter += 1
@@ -248,17 +248,10 @@ class JeevesBot:
 	
 	def card_image_string(self, index):
 		card_info = self.card_data[index]
-		packd = next(filter(lambda pack: pack["code"] == card_info["pack_code"], self.pack_data))
-		cycled = next(filter(lambda cycle: cycle["code"] == packd["cycle_code"], self.cycle_data))
-		if (cycled["position"] < 6) or (cycled["position"]==6 and packd["position"]==1):
-			return self.NRDB_URL_TEMPLATE.format(code=card_info["code"])
+		if "image_url" in card_info:
+			return card_info["image_url"]
 		else:
-			if cycled["position"] < 20:
-				packcode = PACKARRAY[cycled["position"]-6]+packd["position"]
-			else:
-				packcode = PACKARRAY2[cycled["position"]-20]+packd["position"]
-			cardcode = card_info["position"]
-			return self.CGDB_URL_TEMPLATE.format(packcode=packcode, cardcode=cardcode)
+			return self.NRDB_URL_TEMPLATE.format(code=card_info["code"])
 
 	
 	def card_info_string(self, index):

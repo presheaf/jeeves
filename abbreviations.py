@@ -260,5 +260,3 @@ SUPERSCRIPTS = {
         'x': 'ˣ'
     }
 
-PACKARRAY = [15, 21, 22, 28, 29, 35, 42, 41]
-PACKARRAY2 = [48, 49, 55]
