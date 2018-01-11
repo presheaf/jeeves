@@ -96,3 +96,4 @@ twitter_secrets.py
 
 # Temporary files
 *~
+*.swp

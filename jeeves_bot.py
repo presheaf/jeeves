@@ -3,13 +3,18 @@
 
 import json, re, requests, random, time, tweepy, logging
 from googleapiclient.discovery import build
-from fuzzywuzzy import process, fuzz
+from fuzzywuzzy import process, fuzz, utils
 
 from twitter_secrets import CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TOKEN, ACCESS_TOKEN_SECRET
 from secrets import GOOGLE_API_KEY, GOOGLE_SEARCH_CX
 from ripsave import RIP, SAVED
 from customemoji import CUSTOMEMOJI, FACTIONS
 from abbreviations import ABBREVIATIONS, SUPERSCRIPTS
+
+try:
+	from .StringMatcher import StringMatcher as SequenceMatcher
+except ImportError:
+	from difflib import SequenceMatcher
 
 class JeevesBot:
 
@@ -100,7 +105,7 @@ class JeevesBot:
 				'jeevesplease': self.sosorry,
 				'drils': self.drillstweets,
 				'drills': self.drillstweets,
-				'echo': self.echo,
+				'echo': self.echo_text,
 				'update': self.NRDBGet
 				}
 
@@ -242,7 +247,7 @@ class JeevesBot:
 		else:
 			self.print_message("Fuzzy matching, finding match no: "+str(lQQ))
 			best_match, certainty = process.extract(query, self.card_names, 
-					limit=(lQQ+1))[lQQ]
+					scorer= self.WSRatio, limit=(lQQ+1))[lQQ]
 			return self.card_names.index(best_match), certainty
 
 	
@@ -360,4 +365,56 @@ class JeevesBot:
 
 		return text
 
+
+	def WSRatio(self, s1, s2, force_ascii=True, full_process=True):
+		"""
+		Mostly copies Weighted ratio of FuzzyWuzzy, but changes it slightly for our purposese
+		Does not punish large differences in size between strings, and incentivizes earlier hits
+		"""
+
+		if full_process:
+			p1 = utils.full_process(s1, force_ascii=force_ascii)
+			p2 = utils.full_process(s2, force_ascii=force_ascii)
+		else:
+			p1 = s1
+			p2 = s2
+
+		if not utils.validate_string(p1):
+			return 0
+		if not utils.validate_string(p2):
+			return 0
+
+		try_partial = True
+		unbase_scale = .95
+		partial_scale = .90
+
+		base = fuzz.ratio(p1, p2)
+		len_ratio = float(max(len(p1),len(p2)))/min(len(p1),len(p2))
+
+		# if strings are similar length, don't look at partials
+		if len_ratio < 1.5:
+			try_partial = False
+
+
+		if try_partial:
+			partial = fuzz.partial_ratio(p1, p2)*partial_scale
+			ptsor = fuzz.partial_token_sort_ratio(p1, p2, full_process=False) \
+					* unbase_scale * partial_scale
+			ptser = fuzz.partial_token_set_ratio(p1, p2, full_process=False) \
+					*unbase_scale * partial_scale
+
+			return utils.intr(max(base, partial, ptsor, ptser)) - self.firstHit(p1, p2)
+		else:
+			tsor = fuzz.token_sort_ratio(p1, p2, full_process=False) * unbase_scale
+			tser = fuzz.token_set_ratio(p1, p2, full_process=False) * unbase_scale
+
+			return utils.intr(max(base, tsor, tser))
+
+	def firstHit(self, s1, s2):
+		# Sequencematcher is called like a bajillion times throughout everything
+		m = SequenceMatcher(None, s1, s2)
+		blocks = m.get_matching_blocks()
+		maxB = max(map(lambda b: b[2], blocks))
+		longestBlocks = filter(lambda b: b[2]== maxB, blocks)
+		return min(map(lambda b: b[1], longestBlocks))
 
