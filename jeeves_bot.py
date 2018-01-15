@@ -8,6 +8,7 @@ from fuzzywuzzy import process, fuzz, utils
 from twitter_secrets import CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TOKEN, ACCESS_TOKEN_SECRET
 from secrets import GOOGLE_API_KEY, GOOGLE_SEARCH_CX
 from ripsave import RIP, SAVED
+from core2 import CORE2
 from customemoji import CUSTOMEMOJI, FACTIONS
 from abbreviations import ABBREVIATIONS, SUPERSCRIPTS
 
@@ -60,6 +61,11 @@ class JeevesBot:
 		self.pack_data = nrdb_pack_api["data"]
 		self.cycle_data = nrdb_cycle_api["data"]
 		self.card_names = list(map(lambda card_dict: card_dict["title"].lower(), self.card_data))
+		
+		# Midlertidig løsning, gjør forhåpentligvis at vi alltid finner revised core over ikke
+		self.card_names.reverse()
+		self.card_data.reverse()
+
 		self.NRDB_URL_TEMPLATE = nrdb_card_api["imageUrlTemplate"]
 		return 'Cardlist Updated!'
 	
@@ -90,7 +96,8 @@ class JeevesBot:
 				'christian': ':milk: :poop:',
 				'vanadis': 'https://i.imgur.com/MJz4dAJ.jpg',
 				'core': 'He warned us! Praise be the prophet!',
-				'BOOM': 'http://i.imgur.com/XTslY6N.png'
+				'BOOM': 'http://i.imgur.com/XTslY6N.png',
+				'beanstalk': 'http://i.imgur.com/S4EHlou.jpg'
 				}
 
 		functionDict = {
