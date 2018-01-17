@@ -1,14 +1,13 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import json, re, requests, random, time, tweepy, logging
+import json, re, requests, random, time, tweepy, logging, discord
 from googleapiclient.discovery import build
 from fuzzywuzzy import process, fuzz, utils
 
 from twitter_secrets import CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TOKEN, ACCESS_TOKEN_SECRET
 from secrets import GOOGLE_API_KEY, GOOGLE_SEARCH_CX
 from ripsave import RIP, SAVED
-from core2 import CORE2
 from customemoji import CUSTOMEMOJI, FACTIONS
 from abbreviations import ABBREVIATIONS, SUPERSCRIPTS
 
@@ -113,7 +112,8 @@ class JeevesBot:
 				'drils': self.drillstweets,
 				'drills': self.drillstweets,
 				'echo': self.echo_text,
-				'update': self.NRDBGet
+				'update': self.NRDBGet,
+				'random': self.randomNum
 				}
 
 
@@ -135,6 +135,12 @@ class JeevesBot:
 			return " ".join(vals)
 		else:
 			return None
+
+	def randomNum(self, vals):
+		if len(vals) > 0 and vals[0].isdigit() and int(vals[0]) > 0:
+			return "Rolling 1d"+str(vals[0])+". You rolled: "+str(random.randint(1, int(vals[0])))
+		else:
+			return str(random.randint(1, 6))
 
 	def psi_game(self, vals):
 		if len(vals) > 0 and vals[0].isdigit() and int(vals[0]) >= 0 and int(vals[0]) < 3:
@@ -269,6 +275,7 @@ class JeevesBot:
 	def card_info_string(self, index):
 		"""
 		Returns nicely formatted card info to send to chat.
+		Now in form of an embed!
 		"""
 		card_info = self.card_data[index]
 		if "text" not in card_info:
@@ -319,8 +326,8 @@ class JeevesBot:
 
 		packd = next(filter(lambda pack: pack["code"] == card_info["pack_code"], self.pack_data))
 		cycled = next(filter(lambda cycle: cycle["code"] == packd["cycle_code"], self.cycle_data))
-		packline = "\n\n*" + packd["name"] + " - " + cycled["name"] + "* #"+str(card_info["position"])
-
+		packline = packd["name"] + " - " + cycled["name"] + " #"+str(card_info["position"])
+		card_decription = ""
 
 		if card_info["type_code"] == "identity": # card is an ID
 			try:
@@ -329,22 +336,26 @@ class JeevesBot:
 			except:
 				linkinfo = ""
 		
-			return (
-				"**{name}**\n"
+			card_description = (
 				"*{infline} {minimum_deck_size}/{influence_limit}{linkinfo}*\n\n"
-				"{text}{flavortext}{packline}"
-				).format(name=name, infline=infline, linkinfo=linkinfo, 
-					flavortext=flavortext, packline=packline, **card_info)
+				"{text}{flavortext}"
+				).format(infline=infline, linkinfo=linkinfo, 
+					flavortext=flavortext, **card_info)
 		
 		else: # card is a "normal" card
 			cardtext = card_info["text"] 
 			
-			return (
-				"**{name}**\n*{typeline}*, {infline}\n{statline}\n"
-				"{cardtext}{flavortext}{packline}"
-				).format(name=name, typeline=typeline, infline=infline,
-					statline=statline, cardtext=cardtext, flavortext=flavortext, 
-					packline=packline)
+			card_description = (
+				"*{typeline}*, {infline}\n{statline}\n"
+				"{cardtext}{flavortext}"
+				).format(typeline=typeline, infline=infline,
+					statline=statline, cardtext=cardtext, flavortext=flavortext)
+		cardurl = "https://netrunnerdb.com/en/card/"+str(card_info["code"])
+		cardEmbed = discord.Embed(title="**"+name+"**", url=cardurl,
+				description=card_description)
+		cardEmbed.set_footer(text=packline)
+		cardEmbed.set_thumbnail(url=self.card_image_string(index))
+		return cardEmbed
 
 	
 		

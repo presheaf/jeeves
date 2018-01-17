@@ -72,7 +72,10 @@ async def on_message(message):
 				await client.delete_message(message)
 			msg = jeeves.execute_system(query)
 		if msg is not None:
-			await client.send_message(message.channel, msg)
+			if type(msg) is str:
+				await client.send_message(message.channel, msg)
+			else:
+				await client.send_message(message.channel, embed=msg)
 
 
 @client.event
