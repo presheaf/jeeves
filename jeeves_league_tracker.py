@@ -75,6 +75,13 @@ class League:
             self.unmatches[ID].confirmed = True
             del self.unmatches[ID]
             return True
+
+    def confirm_all_matches(self, user):
+        s = 0
+        for ID in list(self.unmatches.keys()):
+            if self.confirm_match(ID, user):
+                s +=1
+        return s
     
     def decline_match(self, ID, user):
         """
@@ -89,6 +96,13 @@ class League:
             del self.unmatches[ID]
             self.recalculate_standings()
             return True
+
+    def decline_all_matches(self, user):
+        s = 0
+        for ID in list(self.unmatches.keys()):
+            if self.decline_match(ID, user):
+                s += 1
+        return s
 
 
     def return_unconfirmed(self):
@@ -115,6 +129,8 @@ class League:
         return s
 
     def recalculate_standings(self):
+        for player in self.players:
+            self.players[player].ranking = 1500
         for match in self.matches:
             match.computeELO()
 

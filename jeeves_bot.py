@@ -135,7 +135,9 @@ class JeevesBot:
                 'standings': self.leagueStandings,
                 'decline': self.declineMatch,
                 'league': self.leagueUsage,
-                'mystanding': self.myStanding
+                'mystanding': self.myStanding,
+                'confirmall': self.confirmAllMatches,
+                'declineall': self.declineAllMatches
                 }
 
 
@@ -170,9 +172,10 @@ class JeevesBot:
                 "whether you won/lost. The @opponent has to be a mention (include identifier).")
         confirmusage = ("To confirm a match, write \"!confirm matchID\", where matchID can "
                 "be found by checking !unconfirmed. To decline a match, write "
-                "\"!decline matchID\" instead.")
+                "\"!decline matchID\" instead. You can also confirm or decline all matches with "
+                "\"!confirmall\" or \"!declineall\"")
         standingsusage = ("To check standings, write \"!standings\". ELO is recalculated every time "
-                "a match is reported, and recalculated if someone denies a match. You can also check "
+                "a match is reported, and recalculated if someone declines a report. You can also check "
                 "your own ELO rating with \"!mystanding\"")
         embed = discord.Embed(title="**JeevesBot League usage**", description = leaguedescription)
         embed.add_field(name="**Joining**", value=joinusage)
@@ -212,6 +215,14 @@ class JeevesBot:
         else:
             return "Could not find matchID or you are not the correct opponent."
 
+    def confirmAllMatches(self, data):
+        vals = data[0]
+        message = data[1]
+        if not self.inLeagueChannel(message):
+            return None
+        m = self.league.confirm_all_matches(message.author)
+        return "Confirmed {} matches!".format(m)
+
     def declineMatch(self, data):
         vals = data[0]
         message = data[1]
@@ -224,6 +235,14 @@ class JeevesBot:
             return "Match declined!"
         else: 
             return "Could not find matchID or you are not the correct opponent."
+
+    def declineAllMatches(self, data):
+        vals = data[0]
+        message = data[1]
+        if not self.inLeagueChannel(message):
+            return None
+        m = self.league.decline_all_matches(message.author)
+        return "Declined {} matches!".format(m)
 
     def unconfirmedMatches(self, data):
         if not self.inLeagueChannel(data[1]):
