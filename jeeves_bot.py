@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import json, re, requests, random, time, tweepy, logging, discord, pickle
+import sts_wikitrawl as sts
 from googleapiclient.discovery import build
 from fuzzywuzzy import process, fuzz, utils
 
@@ -58,6 +59,15 @@ class JeevesBot:
             self.league = League()
             self.print_message('Creating new league')
 
+        # Slay The Spire-setup
+        self.STSGet(None)
+
+    def STSGet(self, vals):
+        self.print_message('Downloading Slay The Spire info from the official Wiki')
+        self.sts_cards, self.sts_card_names = sts.fetchCards()
+        self.sts_enemies, self.sts_enemy_names = sts.fetchEnemies()
+        self.sts_relics, self.sts_relic_names = sts.fetchRelics()
+        return 'Slay The Spire-info updated!'
 
     def NRDBGet(self, vals):
         self.print_message('Downloading NRDB API')
@@ -70,17 +80,25 @@ class JeevesBot:
         nrdb_pack_api = requests.get(packurl).json()
         nrdb_cycle_api = requests.get(cycleurl).json()
         
-        self.card_data = nrdb_card_api["data"]
+        self.card_data, self.card_names = self.make_card_dictionaries(nrdb_card_api["data"])
         self.pack_data = nrdb_pack_api["data"]
         self.cycle_data = nrdb_cycle_api["data"]
-        self.card_names = list(map(lambda card_dict: card_dict["title"].lower(), self.card_data))
-        
-        # Midlertidig løsning, gjør forhåpentligvis at vi alltid finner revised core over ikke
-        self.card_names.reverse()
-        self.card_data.reverse()
 
         self.NRDB_URL_TEMPLATE = nrdb_card_api["imageUrlTemplate"]
         return 'Cardlist Updated!'
+
+    def make_card_dictionaries(self, cardlist):
+        '''
+        Makes dictionaries of cards, keyed by card-id. First is with all card-info, second is
+        with only cardnames as values
+        '''
+        carddict = {}
+        namedict = {}
+        for item in cardlist:
+            cardid = item.pop('code')
+            carddict[cardid] = item
+            namedict[cardid] = item['title'].lower()
+        return carddict, namedict
     
 
     def print_message(self, message):
@@ -137,7 +155,9 @@ class JeevesBot:
                 'league': self.leagueUsage,
                 'mystanding': self.myStanding,
                 'confirmall': self.confirmAllMatches,
-                'declineall': self.declineAllMatches
+                'declineall': self.declineAllMatches,
+                'sts': self.stssearch,
+                'stsupdate': self.STSGet
                 }
 
 
@@ -156,6 +176,7 @@ class JeevesBot:
     def test(self, data):
         message = data[1]
         return "I am posting in channel: "+message.channel.name+" with id "+message.channel.id
+
 
     def inLeagueChannel(self, message):
         return message.channel.name == "ligarapporter"
@@ -267,6 +288,24 @@ class JeevesBot:
         except:
             self.print_message("Failed to save league :(")
 
+
+    def stssearch(self, data):
+        vals = data[0]
+        if len(vals) == 0:
+            return 'I love Slay the Spire as well!'
+        if vals[0].lower() == 'enemy':
+            searchdict = self.sts_enemy_names
+            valdict = self.sts_enemies
+        elif vals[0].lower() == 'relic':
+            searchdict = self.sts_relic_names
+            valdict = self.sts_relics
+        elif vals[0].lower() == 'card':
+            searchdict = self.sts_card_names
+            valdict = self.sts_cards
+        else:
+            return "Usage: !sts enemy/relic/card name"
+        best_match, certainty, best_key = process.extractOne(" ".join(vals[1:]), searchdict)
+        return sts.sts_text(best_key, valdict)
 
     def echo_text(self, data):
         vals = data[0]
@@ -399,30 +438,30 @@ class JeevesBot:
             self.print_message("Applying abbrev.")
             query = ABBREVIATIONS[query].lower()
 
-        if query in self.card_names:
+        if query in self.card_names.values():
             self.print_message("Matching from exact match.")
-            return self.card_names.index(query), 100
+            return list(self.card_names.keys())[list(self.card_names.values()).index(query)], 100
         else:
             self.print_message("Fuzzy matching, finding match no: "+str(lQQ))
-            best_match, certainty = process.extract(query, self.card_names, 
+            best_match, certainty, best_key = process.extract(query, self.card_names, 
                     scorer= self.WSRatio, limit=(lQQ+1))[lQQ]
-            return self.card_names.index(best_match), certainty
+            return best_key, certainty
 
     
-    def card_image_string(self, index):
-        card_info = self.card_data[index]
+    def card_image_string(self, code):
+        card_info = self.card_data[code]
         if "image_url" in card_info:
             return card_info["image_url"]
         else:
-            return self.NRDB_URL_TEMPLATE.format(code=card_info["code"])
+            return self.NRDB_URL_TEMPLATE.format(code=code)
 
     
-    def card_info_string(self, index):
+    def card_info_string(self, code):
         """
         Returns nicely formatted card info to send to chat.
         Now in form of an embed!
         """
-        card_info = self.card_data[index]
+        card_info = self.card_data[code]
         if "text" not in card_info:
             card_info["text"] = ""
             self.print_message("blank", LOG_FILE)
@@ -495,11 +534,11 @@ class JeevesBot:
                 "{cardtext}{flavortext}"
                 ).format(typeline=typeline, infline=infline,
                     statline=statline, cardtext=cardtext, flavortext=flavortext)
-        cardurl = "https://netrunnerdb.com/en/card/"+str(card_info["code"])
+        cardurl = "https://netrunnerdb.com/en/card/"+str(code)
         cardEmbed = discord.Embed(title="**"+name+"**", url=cardurl,
                 description=card_description)
         cardEmbed.set_footer(text=packline)
-        cardEmbed.set_thumbnail(url=self.card_image_string(index))
+        cardEmbed.set_thumbnail(url=self.card_image_string(code))
         return cardEmbed
 
     
