@@ -7,7 +7,7 @@ import pickle
 
 from secrets import JEEVES_KEY
 
-from jeeves_bot import JeevesBot
+from jeeves_bot import *
 
 
 ##### NRDB lookup bot.

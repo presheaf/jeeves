@@ -16,7 +16,7 @@ from abbreviations import ABBREVIATIONS, SUPERSCRIPTS
 from jeeves_league_tracker import League
 
 try:
-    from .StringMatcher import StringMatcher as SequenceMatcher
+    from StringMatcher import StringMatcher as SequenceMatcher
 except ImportError:
     from difflib import SequenceMatcher
 
